@@ -14,8 +14,9 @@ public record TranslationDTO(
         String targetLanguage,
         @NotBlank
         @Size(min = 1, max = 200)
-        String text,
-        @NotBlank
-        Words word,
-        String source) {
+        String text
+        //@NotBlank
+        //Words word,
+        //String source
+        ) {
 }

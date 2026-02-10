@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 
+import javax.swing.text.html.Option;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Entity
@@ -23,7 +25,7 @@ public class Words {
 
     // Язык исходного слова: рекомендуем ISO code, напр. "en", "es", "uk"
     @Column(nullable = false, length = 10)
-    private String language;
+    private String sourceLanguage;
 
     @Column(nullable = false)
     private String originalWord;
@@ -36,4 +38,5 @@ public class Words {
     // Lista de traducción (muchos traducciónes — una entidad 'Translation')
     @OneToMany(mappedBy = "word", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Translation> translations;
+
 }

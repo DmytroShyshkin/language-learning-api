@@ -12,11 +12,13 @@ public record WordsDTO(
         UUID id,
         @NotBlank
         @Pattern(regexp = "^[a-z]{2}(-[A-Z]{2})?$", message = "Language must be an ISO code like 'en' or 'en-US'")
-        String lenguage,
+        String sourceLanguage,
         @NotBlank
         @Size(min = 1, max = 100)
         String originalWord,
-        UUID ownerId,
+        UUID ownerId
+        )
         // translations optional on create; validate nested DTOs with @Valid in controller if List<TranslationDTO>
-        List<TranslationDTO> translations) {
+        //List<TranslationDTO> translations)
+        {
 }
