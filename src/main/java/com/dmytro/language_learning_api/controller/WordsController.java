@@ -6,6 +6,7 @@ import com.dmytro.language_learning_api.service.WordsService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/words")
 @AllArgsConstructor
+@Validated
 public class WordsController {
 
     public final WordsService wordsService;

@@ -1,7 +1,9 @@
 ﻿package com.dmytro.language_learning_api.service;
 
 import com.dmytro.language_learning_api.dto.UsersDTO;
-import com.dmytro.language_learning_api.exception.UserNotFoundException;
+import com.dmytro.language_learning_api.exception.ConflictException.EmailAlreadyExistsException;
+import com.dmytro.language_learning_api.exception.ConflictException.UsernameAlreadyExistsException;
+import com.dmytro.language_learning_api.exception.NotFoundException.UserNotFoundException;
 import com.dmytro.language_learning_api.mapper.UsersMapper;
 import com.dmytro.language_learning_api.model.Users;
 import com.dmytro.language_learning_api.repository.UsersRepository;
@@ -29,7 +31,7 @@ public class UserServiceImpl implements UserService {
         Users user = getUserOrThrow(userId);
 
         if (usersRepository.existsByEmail(newEmail)) {
-            throw new RuntimeException("Email already in use");
+            throw new EmailAlreadyExistsException("Email: " + newEmail + " already in use");
         }
 
         user.setEmail(newEmail);
@@ -43,7 +45,7 @@ public class UserServiceImpl implements UserService {
         Users user = getUserOrThrow(userId);
 
         if (usersRepository.existsByUsername(newUsername)) {
-            throw new RuntimeException("Username already in use");
+            throw new UsernameAlreadyExistsException("Username: " + newUsername + " already in use");
         }
 
         user.setUsername(newUsername);

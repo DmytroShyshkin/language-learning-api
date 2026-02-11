@@ -5,6 +5,7 @@ import com.dmytro.language_learning_api.service.TranslationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -12,6 +13,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/words/{wordsId}/translations")
 @RequiredArgsConstructor
+@Validated
 public class TranslationController {
 
     private final TranslationService translationService;

@@ -2,8 +2,8 @@
 
 import com.dmytro.language_learning_api.dto.TranslationDTO;
 import com.dmytro.language_learning_api.dto.WordsDTO;
-import com.dmytro.language_learning_api.exception.UserNotFoundException;
-import com.dmytro.language_learning_api.exception.WordNotFoundException;
+import com.dmytro.language_learning_api.exception.NotFoundException.UserNotFoundException;
+import com.dmytro.language_learning_api.exception.NotFoundException.WordNotFoundException;
 import com.dmytro.language_learning_api.mapper.TranslationMapper;
 import com.dmytro.language_learning_api.mapper.WordsMapper;
 import com.dmytro.language_learning_api.model.Translation;
