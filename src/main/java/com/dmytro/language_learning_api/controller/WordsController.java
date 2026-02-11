@@ -3,6 +3,7 @@
 import com.dmytro.language_learning_api.dto.TranslationDTO;
 import com.dmytro.language_learning_api.dto.WordsDTO;
 import com.dmytro.language_learning_api.service.WordsService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,12 +24,12 @@ public class WordsController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<WordsDTO>> getAllWordsByOwnerId(@PathVariable UUID userId) {
+    public ResponseEntity<List<WordsDTO>> getAllWordsByOwnerId(UUID userId) {
         return ResponseEntity.ok(wordsService.getAllWordsByOwnerId(userId));
     }
 
     @PostMapping
-    public ResponseEntity<WordsDTO> createWord(@RequestBody WordsDTO wordsDto) {
+    public ResponseEntity<WordsDTO> createWord(@Valid @RequestBody WordsDTO wordsDto) {
         return ResponseEntity.ok(wordsService.createWord(wordsDto));
     }
 
@@ -43,7 +44,7 @@ public class WordsController {
     }
 
     @PutMapping("/{wordId}/add-translation-to-word")
-    public ResponseEntity<WordsDTO> addTranslationToWordById(@PathVariable UUID wordId, @RequestBody TranslationDTO translationDto) {
+    public ResponseEntity<WordsDTO> addTranslationToWordById(@PathVariable UUID wordId, @Valid @RequestBody TranslationDTO translationDto) {
         return  ResponseEntity.ok(wordsService.addTranslationToWord(wordId, translationDto));
     }
 

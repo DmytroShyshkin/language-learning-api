@@ -2,6 +2,7 @@
 
 import com.dmytro.language_learning_api.model.Users;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
@@ -16,6 +17,7 @@ public record WordsDTO(
         @NotBlank
         @Size(min = 1, max = 100)
         String originalWord,
+        @NotNull(message = "Owner id is required")
         UUID ownerId
         )
         // translations optional on create; validate nested DTOs with @Valid in controller if List<TranslationDTO>
