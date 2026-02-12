@@ -1,4 +1,4 @@
-﻿package com.dmytro.language_learning_api.dto;
+package com.dmytro.language_learning_api.dto;
 
 import com.dmytro.language_learning_api.model.Users;
 import jakarta.validation.constraints.NotBlank;

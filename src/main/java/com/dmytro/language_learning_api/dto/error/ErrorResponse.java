@@ -1,13 +1,13 @@
-﻿package com.dmytro.language_learning_api.dto.error;
+package com.dmytro.language_learning_api.dto.error;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Getter
 public class ErrorResponse {
 
-    // getters
     private LocalDateTime timestamp;
     private int status;
     private String error;

@@ -1,4 +1,4 @@
-﻿package com.dmytro.language_learning_api.dto.error;
+package com.dmytro.language_learning_api.dto.error;
 
 import lombok.Getter;
 

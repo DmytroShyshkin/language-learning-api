@@ -1,4 +1,4 @@
-﻿package com.dmytro.language_learning_api.model;
+package com.dmytro.language_learning_api.model;
 
 import jakarta.persistence.*;
 import lombok.*;

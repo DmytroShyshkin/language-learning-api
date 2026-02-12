@@ -1,4 +1,4 @@
-﻿package com.dmytro.language_learning_api.mapper;
+package com.dmytro.language_learning_api.mapper;
 
 import com.dmytro.language_learning_api.dto.WordsDTO;
 import com.dmytro.language_learning_api.model.Words;

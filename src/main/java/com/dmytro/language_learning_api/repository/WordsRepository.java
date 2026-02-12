@@ -1,4 +1,4 @@
-﻿package com.dmytro.language_learning_api.repository;
+package com.dmytro.language_learning_api.repository;
 
 import com.dmytro.language_learning_api.dto.WordsDTO;
 import com.dmytro.language_learning_api.model.Words;

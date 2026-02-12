@@ -1,4 +1,4 @@
-﻿package com.dmytro.language_learning_api.dto;
+package com.dmytro.language_learning_api.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

@@ -1,4 +1,4 @@
-﻿package com.dmytro.language_learning_api.service;
+package com.dmytro.language_learning_api.service;
 
 import com.dmytro.language_learning_api.dto.UsersDTO;
 import com.dmytro.language_learning_api.exception.ConflictException.EmailAlreadyExistsException;
@@ -24,6 +24,24 @@ public class UserServiceImpl implements UserService {
         Users user = getUserOrThrow(userId);
 
         return usersMapper.toDto(user);
+    }
+
+    @Override
+    public UsersDTO createUser(UsersDTO dto) {
+
+        if (usersRepository.existsByEmail(dto.email())) {
+            throw new EmailAlreadyExistsException(dto.email());
+        }
+
+        if (usersRepository.existsByUsername(dto.username())) {
+            throw new UsernameAlreadyExistsException(dto.username());
+        }
+
+        Users user = usersMapper.fromDto(dto);
+
+        Users savedUser = usersRepository.save(user);
+
+        return usersMapper.toDto(savedUser);
     }
 
     @Override

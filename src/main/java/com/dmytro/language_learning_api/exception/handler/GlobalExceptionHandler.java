@@ -1,4 +1,4 @@
-﻿package com.dmytro.language_learning_api.exception.handler;
+package com.dmytro.language_learning_api.exception.handler;
 
 import com.dmytro.language_learning_api.dto.error.ErrorResponse;
 import com.dmytro.language_learning_api.dto.error.FieldValidationError;

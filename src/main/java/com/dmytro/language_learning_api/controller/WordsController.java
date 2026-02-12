@@ -1,4 +1,4 @@
-﻿package com.dmytro.language_learning_api.controller;
+package com.dmytro.language_learning_api.controller;
 
 import com.dmytro.language_learning_api.dto.TranslationDTO;
 import com.dmytro.language_learning_api.dto.WordsDTO;

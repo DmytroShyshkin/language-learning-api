@@ -1,9 +1,10 @@
-﻿package com.dmytro.language_learning_api.controller;
+package com.dmytro.language_learning_api.controller;
 
 import com.dmytro.language_learning_api.dto.UsersDTO;
 import com.dmytro.language_learning_api.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +22,15 @@ public class UsersController {
     @GetMapping("/{id}")
     public ResponseEntity<UsersDTO> getUser(@PathVariable UUID id) {
         return ResponseEntity.ok(userService.getUserById(id));
+    }
+
+    @PutMapping
+    public ResponseEntity<UsersDTO> createUser(@Valid @RequestBody UsersDTO userDTO) {
+        UsersDTO createdUser = userService.createUser(userDTO);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(createdUser);
     }
 
     @PutMapping("/{id}/email")
