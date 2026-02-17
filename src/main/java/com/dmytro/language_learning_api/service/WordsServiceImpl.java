@@ -33,14 +33,14 @@ public class WordsServiceImpl implements WordsService {
         Users owner = usersRepository.findById(dto.ownerId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        Words word = new Words();
+        Words word = wordsMapper.fromDto(dto);
+        /*
         word.setSourceLanguage(dto.sourceLanguage());
         word.setOriginalWord(dto.originalWord());
         word.setOwner(owner);
-
-        wordsRepository.save(word);
-
-        return new WordsMapper().toDto(word);
+        */
+        Words savedWord = wordsRepository.save(word);
+        return wordsMapper.toDto(savedWord);
     }
 
     @Override
@@ -48,13 +48,7 @@ public class WordsServiceImpl implements WordsService {
         Words word = getWordOrThrow(wordId);
         return new WordsMapper().toDto(word);
     }
-    /*
-    @Override
-    public List<WordsDTO> getWordsByUser(UUID wordId) {
-        List<Words> word = getWordsByOwnerOrThrow(wordId);
-        return new WordsMapper().toDto(word);
-    }
-    */
+
     @Override
     public WordsDTO updateSourceLanguage(UUID wordId, String newSourceWord) {
         Words word = getWordOrThrow(wordId);
@@ -62,7 +56,9 @@ public class WordsServiceImpl implements WordsService {
 
         wordsRepository.save(word);
 
-        return new WordsMapper().toDto(word);
+        //WordsDTO savedWordDto = new WordsMapper().toDto(word);
+
+        return wordsMapper.toDto(word);
     }
 
     @Override
@@ -72,7 +68,7 @@ public class WordsServiceImpl implements WordsService {
 
         wordsRepository.save(word);
 
-        return new WordsMapper().toDto(word);
+        return wordsMapper.toDto(word);
     }
 
     @Override
