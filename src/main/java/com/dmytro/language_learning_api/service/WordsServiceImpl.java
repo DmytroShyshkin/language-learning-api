@@ -46,7 +46,7 @@ public class WordsServiceImpl implements WordsService {
     @Override
     public WordsDTO getWordById(UUID wordId) {
         Words word = getWordOrThrow(wordId);
-        return new WordsMapper().toDto(word);
+        return wordsMapper.toDto(word);
     }
 
     @Override
@@ -81,12 +81,6 @@ public class WordsServiceImpl implements WordsService {
     }
 
     @Override
-    public void deleteWord(UUID wordId) {
-        Words word = getWordOrThrow(wordId);
-        wordsRepository.delete(word);
-    }
-
-    @Override
     public WordsDTO addTranslationToWord(UUID wordId, TranslationDTO translationDto) {
         Words word = getWordOrThrow(wordId);
 
@@ -97,6 +91,12 @@ public class WordsServiceImpl implements WordsService {
         Words savedWord = wordsRepository.save(word);
 
         return wordsMapper.toDto(savedWord);
+    }
+
+    @Override
+    public void deleteWord(UUID wordId) {
+        Words word = getWordOrThrow(wordId);
+        wordsRepository.delete(word);
     }
 
     // Clases auxiliares
