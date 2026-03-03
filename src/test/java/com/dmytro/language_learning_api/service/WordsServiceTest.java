@@ -1,6 +1,8 @@
 package com.dmytro.language_learning_api.service;
 
+import com.dmytro.language_learning_api.dto.SynonymDTO;
 import com.dmytro.language_learning_api.dto.TranslationDTO;
+import com.dmytro.language_learning_api.dto.UpdateWordRequest;
 import com.dmytro.language_learning_api.dto.WordsDTO;
 import com.dmytro.language_learning_api.mapper.TranslationMapper;
 import com.dmytro.language_learning_api.mapper.WordsMapper;
@@ -31,7 +33,7 @@ public class WordsServiceTest {
     @Mock
     private WordsMapper wordsMapper;
     @Mock
-    TranslationMapper translationMapper;
+    private TranslationMapper translationMapper;
     @Mock
     private WordsRepository wordsRepository;
     @Mock
@@ -118,79 +120,102 @@ public class WordsServiceTest {
     }
 
     @Test
-    void shouldReturnUpdatedSourceLanguage() {
+    void shouldUpdateBothFields() {
         UUID id = UUID.randomUUID();
-        String newSourceLanguage = "UA";
 
         Words word = new Words();
         word.setId(id);
         word.setSourceLanguage("EN");
-        word.setOriginalWord("orWord");
+        word.setOriginalWord("oldWord");
+
+        UpdateWordRequest request =
+                new UpdateWordRequest("UA", "newWord");
 
         WordsDTO updatedDto =
-                new WordsDTO(id, newSourceLanguage, "orWord", null);
+                new WordsDTO(id, "UA", "newWord", null);
 
-        // mock find
         when(wordsRepository.findById(id))
                 .thenReturn(Optional.of(word));
 
-        // mock save
         when(wordsRepository.save(any(Words.class)))
                 .thenReturn(word);
 
-        // mock mapper
         when(wordsMapper.toDto(word))
                 .thenReturn(updatedDto);
 
-        // Llamada de servicio
         WordsDTO result =
-                wordsService.updateSourceLanguage(id, newSourceLanguage);
+                wordsService.updateWord(id, request);
 
-        // Verificación del resultado
-        assertEquals(newSourceLanguage, result.sourceLanguage());
+        assertEquals("UA", result.sourceLanguage());
+        assertEquals("newWord", result.originalWord());
 
-        // Comprobamos las llamadas reales
         verify(wordsRepository).findById(id);
         verify(wordsRepository).save(word);
         verify(wordsMapper).toDto(word);
     }
 
+
     @Test
-    void shouldReturnUpdatedOriginalWord() {
+    void shouldNotUpdateWhenValuesAreNull() {
         UUID id = UUID.randomUUID();
-        String newOriginalWord = "newWord";
 
         Words word = new Words();
         word.setId(id);
         word.setSourceLanguage("EN");
-        word.setOriginalWord("orWord");
+        word.setOriginalWord("oldWord");
 
-        WordsDTO updatedDto =
-                new WordsDTO(id, "EN", newOriginalWord, null);
+        UpdateWordRequest request =
+                new UpdateWordRequest(null, null);
 
-        // mock find
+        WordsDTO dto =
+                new WordsDTO(id, "EN", "oldWord", null);
+
         when(wordsRepository.findById(id))
                 .thenReturn(Optional.of(word));
 
-        // mock save
         when(wordsRepository.save(any(Words.class)))
                 .thenReturn(word);
 
-        // mock mapper
         when(wordsMapper.toDto(word))
-                .thenReturn(updatedDto);
+                .thenReturn(dto);
 
-        // Llamada de servicio
         WordsDTO result =
-                wordsService.updateOriginalWord(id, newOriginalWord);
+                wordsService.updateWord(id, request);
 
-        // Verificación del resultado
-        assertEquals(newOriginalWord, result.originalWord());
+        assertEquals("EN", result.sourceLanguage());
+        assertEquals("oldWord", result.originalWord());
+    }
 
-        // Comprobamos las llamadas reales
-        verify(wordsRepository).findById(id);
-        verify(wordsRepository).save(word);
-        verify(wordsMapper).toDto(word);
+
+    @Test
+    void shouldNotUpdateWhenValuesAreBlank() {
+        UUID id = UUID.randomUUID();
+
+        Words word = new Words();
+        word.setId(id);
+        word.setSourceLanguage("EN");
+        word.setOriginalWord("oldWord");
+
+        UpdateWordRequest request =
+                new UpdateWordRequest(" ", "");
+
+        WordsDTO dto =
+                new WordsDTO(id, "EN", "oldWord", null);
+
+        when(wordsRepository.findById(id))
+                .thenReturn(Optional.of(word));
+
+        when(wordsRepository.save(any(Words.class)))
+                .thenReturn(word);
+
+        when(wordsMapper.toDto(word))
+                .thenReturn(dto);
+
+        WordsDTO result =
+                wordsService.updateWord(id, request);
+
+        assertEquals("EN", result.sourceLanguage());
+        assertEquals("oldWord", result.originalWord());
     }
 
     @Test
@@ -241,12 +266,15 @@ public class WordsServiceTest {
         Translation translation = new Translation();
         translation.setId(UUID.randomUUID());
         translation.setTargetLanguage("UA");
-        translation.setText("text");
+        translation.setTranslatedWord("text");
+        translation.setSynonyms(new ArrayList<>());
 
         TranslationDTO translationDto = new TranslationDTO(
                 translation.getId(),
                 translation.getTargetLanguage(),
-                translation.getText()
+                translation.getTranslatedWord(),
+                translation.getTargetLanguage(),
+                new ArrayList<>()
         );
 
         when(wordsRepository.findById(id))

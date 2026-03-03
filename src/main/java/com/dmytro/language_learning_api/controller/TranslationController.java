@@ -8,24 +8,30 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/words/{wordsId}/translations")
+@RequestMapping("/words/{wordId}/translations")
 @RequiredArgsConstructor
 @Validated
 public class TranslationController {
 
     private final TranslationService translationService;
 
-    @PostMapping
-    public ResponseEntity<TranslationDTO> addTranslation(@PathVariable UUID wordsId, @Valid @RequestBody TranslationDTO translationDto) {
-        return ResponseEntity.ok(translationService.addTranslation(wordsId, translationDto));
+    @GetMapping
+    public ResponseEntity<List<TranslationDTO>> getTranslations(@PathVariable UUID wordId) {
+        return ResponseEntity.ok(translationService.getTranslationsByWordId(wordId));
     }
 
     @GetMapping("/{translationId}")
     public ResponseEntity<TranslationDTO> getTranslation(@PathVariable UUID translationId){
         return ResponseEntity.ok(translationService.getTranslationById(translationId));
+    }
+
+    @PostMapping
+    public ResponseEntity<TranslationDTO> addTranslation(@PathVariable UUID wordsId, @Valid @RequestBody TranslationDTO translationDto) {
+        return ResponseEntity.ok(translationService.addTranslation(wordsId, translationDto));
     }
 
     @PutMapping("/{translationId}")
@@ -34,8 +40,8 @@ public class TranslationController {
     }
 
     @DeleteMapping("/{translationId}")
-    public void deleteTranslation(@PathVariable UUID translationId){
+    public ResponseEntity<Void> deleteTranslation(@PathVariable UUID translationId){
         translationService.deleteTranslation(translationId);
-        ResponseEntity.noContent().build();
+        return ResponseEntity.noContent().build();
     }
 }

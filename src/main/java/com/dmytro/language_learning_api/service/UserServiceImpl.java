@@ -10,14 +10,23 @@ import com.dmytro.language_learning_api.repository.UsersRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private UsersRepository usersRepository;
-    private UsersMapper usersMapper;
+    private final UsersRepository usersRepository;
+    private final UsersMapper usersMapper;
+
+    @Override
+    public List<UsersDTO> getAllUsers() {
+        return usersRepository.findAll()
+                .stream()
+                .map(usersMapper::toDto)
+                .toList();
+    }
 
     @Override
     public UsersDTO getUserById(UUID userId) {

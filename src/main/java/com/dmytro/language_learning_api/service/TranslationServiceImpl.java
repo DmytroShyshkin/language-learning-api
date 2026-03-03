@@ -2,6 +2,7 @@ package com.dmytro.language_learning_api.service;
 
 import com.dmytro.language_learning_api.dto.TranslationDTO;
 import com.dmytro.language_learning_api.exception.NotFoundException.TranslationNotFoundException;
+import com.dmytro.language_learning_api.exception.NotFoundException.WordNotFoundException;
 import com.dmytro.language_learning_api.mapper.TranslationMapper;
 import com.dmytro.language_learning_api.model.Translation;
 import com.dmytro.language_learning_api.model.Words;
@@ -10,20 +11,33 @@ import com.dmytro.language_learning_api.repository.WordsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class TranslationServiceImpl implements TranslationService {
 
-    final TranslationRepository translationRepository;
-    final TranslationMapper translationMapper;
-    final WordsRepository wordsRepository;
+    private final TranslationRepository translationRepository;
+    private final TranslationMapper translationMapper;
+    private final WordsRepository wordsRepository;
+
+    @Override
+    public List<TranslationDTO> getTranslationsByWordId(UUID wordId) {
+        List<Translation> translations =
+                translationRepository.findByWordId(wordId);
+
+        if (translations.isEmpty()) {
+            throw new TranslationNotFoundException("Translations not found for word id: " + wordId);
+        }
+
+        return translationMapper.toDto(translations);
+    }
 
     @Override
     public TranslationDTO addTranslation(UUID wordId, TranslationDTO translationDto) {
         Words word = wordsRepository.findById(wordId)
-                .orElseThrow(() -> new RuntimeException("Word not found"));
+                .orElseThrow(() -> new WordNotFoundException("Word not found"));
 
         Translation translation = translationMapper.fromDto(translationDto);
         translation.setWord(word);
@@ -43,7 +57,7 @@ public class TranslationServiceImpl implements TranslationService {
     public TranslationDTO updateTranslation(UUID translationId, TranslationDTO translationDto) {
         Translation translation = getTranslationOrThrow(translationId);
 
-        translation.setText(translationDto.text());
+        translation.setTranslatedWord(translationDto.translatedWord());
         translation.setTargetLanguage(translationDto.targetLanguage());
 
         translationRepository.save(translation);

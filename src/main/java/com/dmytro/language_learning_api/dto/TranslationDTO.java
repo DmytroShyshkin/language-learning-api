@@ -1,10 +1,10 @@
 package com.dmytro.language_learning_api.dto;
 
-import com.dmytro.language_learning_api.model.Words;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
+import java.util.List;
 import java.util.UUID;
 
 public record TranslationDTO(
@@ -15,9 +15,13 @@ public record TranslationDTO(
                 message = "Language must be ISO format like 'en' or 'en-US'"
         )
         String targetLanguage,
-        @NotBlank(message = "Translation text must not be blank")
+        @NotBlank(message = "Translated word must not be blank")
         @Size(min = 1, max = 200, message = "Translation must be between 1 and 200 characters")
-        String text
+        String translatedWord,
+
+        String description,
+
+        List<SynonymDTO> synonyms
         //@NotBlank
         //Words word,
         //String source

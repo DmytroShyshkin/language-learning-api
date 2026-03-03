@@ -41,7 +41,7 @@ public class UsersControllerTest {
         when(userService.getUserById(id))
                 .thenReturn(dto);
 
-        mockMvc.perform(get("/api/users/" + id))
+        mockMvc.perform(get("/users/" + id))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.email").value("test@test.com"))
                 .andExpect(jsonPath("$.username").value("username"));
@@ -70,7 +70,7 @@ public class UsersControllerTest {
         when(userService.createUser(any()))
                 .thenReturn(response);
 
-        mockMvc.perform(put("/api/users")
+        mockMvc.perform(put("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                         {
@@ -100,7 +100,7 @@ public class UsersControllerTest {
         when(userService.updateEmail(id, "updated@test.com"))
                 .thenReturn(dto);
 
-        mockMvc.perform(put("/api/users/" + id + "/email")
+        mockMvc.perform(put("/users/" + id + "/email")
                         .param("email", "updated@test.com"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.email").value("updated@test.com"));
@@ -122,7 +122,7 @@ public class UsersControllerTest {
         when(userService.updateUsername(id, "newUsername"))
                 .thenReturn(dto);
 
-        mockMvc.perform(put("/api/users/" + id + "/username")
+        mockMvc.perform(put("/users/" + id + "/username")
                         .param("username", "newUsername"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.username").value("newUsername"));
@@ -136,7 +136,7 @@ public class UsersControllerTest {
 
         doNothing().when(userService).updatePassword(id, "newPassword");
 
-        mockMvc.perform(put("/api/users/" + id + "/password")
+        mockMvc.perform(put("/users/" + id + "/password")
                         .param("password", "newPassword"))
                 .andExpect(status().isNoContent());
 
@@ -147,7 +147,7 @@ public class UsersControllerTest {
     @Test
     void shouldReturn400WhenPasswordTooShort() throws Exception {
 
-        mockMvc.perform(put("/api/users")
+        mockMvc.perform(put("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                     {

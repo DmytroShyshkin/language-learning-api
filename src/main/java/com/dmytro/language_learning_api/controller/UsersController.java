@@ -9,18 +9,24 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/users")
 @RequiredArgsConstructor
 @Validated
 public class UsersController {
 
     private final UserService userService;
 
+    @GetMapping
+    public ResponseEntity<List<UsersDTO>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
+    }
+
     @GetMapping("/{id}")
-    public ResponseEntity<UsersDTO> getUser(@PathVariable UUID id) {
+    public ResponseEntity<UsersDTO> getUserById(@PathVariable UUID id) {
         return ResponseEntity.ok(userService.getUserById(id));
     }
 

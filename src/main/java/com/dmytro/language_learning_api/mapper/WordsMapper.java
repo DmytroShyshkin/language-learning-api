@@ -2,10 +2,26 @@ package com.dmytro.language_learning_api.mapper;
 
 import com.dmytro.language_learning_api.dto.WordsDTO;
 import com.dmytro.language_learning_api.model.Words;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Mapper(componentModel = "spring")
+public interface WordsMapper {
+
+    @Mapping(target = "ownerId", source = "owner.id")
+    WordsDTO toDto(Words word);
+    @Mapping(target = "owner", ignore = true)
+    Words fromDto(WordsDTO dto);
+
+    @Mapping(target = "ownerId", source = "owner.id")
+    List<WordsDTO> toDto(List<Words> words);
+    @Mapping(target = "owner", ignore = true)
+    List<Words> fromDto(List<WordsDTO> dtos);
+}
+/*
 public class WordsMapper {
     // --- Single word ---
     public WordsDTO toDto(Words word){
@@ -40,3 +56,4 @@ public class WordsMapper {
                 .collect(Collectors.toList());
     }
 }
+*/

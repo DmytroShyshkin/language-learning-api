@@ -1,6 +1,7 @@
 package com.dmytro.language_learning_api.service;
 
 import com.dmytro.language_learning_api.dto.TranslationDTO;
+import com.dmytro.language_learning_api.dto.UpdateWordRequest;
 import com.dmytro.language_learning_api.dto.WordsDTO;
 import com.dmytro.language_learning_api.exception.NotFoundException.UserNotFoundException;
 import com.dmytro.language_learning_api.exception.NotFoundException.WordNotFoundException;
@@ -22,22 +23,23 @@ import java.util.UUID;
 public class WordsServiceImpl implements WordsService {
 
     // Mappers
-    final WordsMapper wordsMapper;
-    final TranslationMapper translationMapper;
+    private final WordsMapper wordsMapper;
+    private final TranslationMapper translationMapper;
     // Repository
-    final WordsRepository wordsRepository;
-    final UsersRepository usersRepository;
+    private final WordsRepository wordsRepository;
+    private final UsersRepository usersRepository;
 
     @Override
     public WordsDTO createWord(WordsDTO dto) {
         Users owner = usersRepository.findById(dto.ownerId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         Words word = wordsMapper.fromDto(dto);
+        word.setOwner(owner);
         /*
         word.setSourceLanguage(dto.sourceLanguage());
         word.setOriginalWord(dto.originalWord());
-        word.setOwner(owner);
+
         */
         Words savedWord = wordsRepository.save(word);
         return wordsMapper.toDto(savedWord);
@@ -50,21 +52,18 @@ public class WordsServiceImpl implements WordsService {
     }
 
     @Override
-    public WordsDTO updateSourceLanguage(UUID wordId, String newSourceWord) {
+    public WordsDTO updateWord(UUID wordId, UpdateWordRequest updateWordRequest) {
         Words word = getWordOrThrow(wordId);
-        word.setSourceLanguage(newSourceWord);
 
-        wordsRepository.save(word);
+        if (updateWordRequest.sourceLanguage() != null && !updateWordRequest.sourceLanguage().isBlank()
+                && !updateWordRequest.sourceLanguage().equals(word.getSourceLanguage())) {
+            word.setSourceLanguage(updateWordRequest.sourceLanguage());
+        }
 
-        //WordsDTO savedWordDto = new WordsMapper().toDto(word);
-
-        return wordsMapper.toDto(word);
-    }
-
-    @Override
-    public WordsDTO updateOriginalWord(UUID wordId, String newOriginalWord) {
-        Words word = getWordOrThrow(wordId);
-        word.setOriginalWord(newOriginalWord);
+        if (updateWordRequest.originalWord() != null && !updateWordRequest.originalWord().isBlank()
+                && !updateWordRequest.originalWord().equals(word.getOriginalWord())) {
+            word.setOriginalWord(updateWordRequest.originalWord());
+        }
 
         wordsRepository.save(word);
 

@@ -2,10 +2,12 @@ package com.dmytro.language_learning_api.service;
 
 import com.dmytro.language_learning_api.dto.UsersDTO;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface UserService {
 
+    List<UsersDTO> getAllUsers();
     UsersDTO getUserById(UUID userId);
 
     UsersDTO createUser(UsersDTO dto);
