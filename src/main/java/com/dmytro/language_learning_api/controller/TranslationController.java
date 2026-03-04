@@ -30,8 +30,8 @@ public class TranslationController {
     }
 
     @PostMapping
-    public ResponseEntity<TranslationDTO> addTranslation(@PathVariable UUID wordsId, @Valid @RequestBody TranslationDTO translationDto) {
-        return ResponseEntity.ok(translationService.addTranslation(wordsId, translationDto));
+    public ResponseEntity<TranslationDTO> addTranslation(@PathVariable UUID wordId, @Valid @RequestBody TranslationDTO translationDto) {
+        return ResponseEntity.ok(translationService.addTranslation(wordId, translationDto));
     }
 
     @PutMapping("/{translationId}")

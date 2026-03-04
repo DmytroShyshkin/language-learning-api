@@ -133,7 +133,7 @@ public class GlobalExceptionHandler {
                 LocalDateTime.now(),
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
-                "Internal server error",
+                "Internal server error. Message: " + ex.getMessage(),
                 req.getRequestURI()
         );
 
@@ -142,5 +142,4 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(response);
     }
-
 }

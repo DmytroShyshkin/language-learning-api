@@ -19,9 +19,9 @@ public record TranslationDTO(
         @Size(min = 1, max = 200, message = "Translation must be between 1 and 200 characters")
         String translatedWord,
 
-        String description,
+        String description
 
-        List<SynonymDTO> synonyms
+        //List<SynonymDTO> synonyms
         //@NotBlank
         //Words word,
         //String source
