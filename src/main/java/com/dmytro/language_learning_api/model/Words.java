@@ -5,10 +5,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 
-import javax.swing.text.html.Option;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name = "words")
@@ -41,4 +38,11 @@ public class Words {
     @OneToMany(mappedBy = "word", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Translation> translations;
 
+    @ManyToMany
+    @JoinTable(
+            name = "word_synonyms",
+            joinColumns = @JoinColumn(name = "word_id"),
+            inverseJoinColumns = @JoinColumn(name = "synonym_id")
+    )
+    private Set<Words> synonyms = new HashSet<>();
 }

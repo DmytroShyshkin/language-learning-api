@@ -1,12 +1,14 @@
 package com.dmytro.language_learning_api.dto;
 
 import com.dmytro.language_learning_api.model.Users;
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public record WordsDTO(
@@ -18,7 +20,9 @@ public record WordsDTO(
         @Size(min = 1, max = 100)
         String originalWord,
         @NotNull(message = "Owner id is required")
-        UUID ownerId
+        UUID ownerId,
+        @Nullable
+        Set<UUID> synonymIds
         )
         // translations optional on create; validate nested DTOs with @Valid in controller if List<TranslationDTO>
         //List<TranslationDTO> translations)

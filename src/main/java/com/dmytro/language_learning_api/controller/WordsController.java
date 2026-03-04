@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +23,7 @@ public class WordsController {
 
     public final WordsService wordsService;
 
+    @Transactional(readOnly = true)
     @GetMapping("/{wordId}")
     public ResponseEntity<WordsDTO> getWordsById(@PathVariable UUID wordId) {
         return ResponseEntity.ok(wordsService.getWordById(wordId));
@@ -40,13 +42,28 @@ public class WordsController {
     }
 
     @PutMapping("/update-word/{wordId}")
-    public ResponseEntity<WordsDTO> updateOriginalWordById(@PathVariable UUID wordId, @RequestBody UpdateWordRequest updateWordRequest) {
+    public ResponseEntity<WordsDTO> updateOriginalWordById(
+            @PathVariable UUID wordId,
+            @RequestBody UpdateWordRequest updateWordRequest
+    ) {
         return ResponseEntity.ok(wordsService.updateWord(wordId, updateWordRequest));
     }
 
     @PutMapping("/add-translation-to-word/{wordId}")
-    public ResponseEntity<WordsDTO> addTranslationToWordById(@PathVariable UUID wordId, @Valid @RequestBody TranslationDTO translationDto) {
+    public ResponseEntity<WordsDTO> addTranslationToWordById(
+            @PathVariable UUID wordId,
+            @Valid @RequestBody TranslationDTO translationDto
+    ) {
         return  ResponseEntity.ok(wordsService.addTranslationToWord(wordId, translationDto));
+    }
+
+    @PostMapping("/{wordId}/synonyms/{synonymId}")
+    public ResponseEntity<Void> addSynonym(
+            @PathVariable UUID wordId,
+            @PathVariable UUID synonymId
+    ) {
+        wordsService.addSynonym(wordId, synonymId);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/delete-word/{wordId}")

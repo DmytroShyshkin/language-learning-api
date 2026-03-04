@@ -1,19 +1,12 @@
 package com.dmytro.language_learning_api.mapper;
 
 import com.dmytro.language_learning_api.dto.TranslationDTO;
-import com.dmytro.language_learning_api.dto.WordsDTO;
-import com.dmytro.language_learning_api.model.Synonym;
 import com.dmytro.language_learning_api.model.Translation;
-import com.dmytro.language_learning_api.model.Words;
 import org.mapstruct.Mapper;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-@Mapper(
-        componentModel = "spring",
-        uses = SynonymMapper.class
-)
+@Mapper()
 public interface TranslationMapper {
 
     TranslationDTO toDto(Translation translation);

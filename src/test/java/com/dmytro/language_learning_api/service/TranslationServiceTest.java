@@ -1,6 +1,5 @@
 package com.dmytro.language_learning_api.service;
 
-import com.dmytro.language_learning_api.dto.SynonymDTO;
 import com.dmytro.language_learning_api.dto.TranslationDTO;
 import com.dmytro.language_learning_api.mapper.TranslationMapper;
 import com.dmytro.language_learning_api.model.Translation;

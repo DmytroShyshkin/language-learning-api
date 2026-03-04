@@ -36,8 +36,10 @@ public class Translation {
     @Column(nullable = true)
     private String description;
 
+    /*
     @OneToMany(mappedBy = "translation", cascade = CascadeType.ALL)
     private List<Synonym> synonyms;
+    */
 
     // recurso (user/manual, deepl, openai)
     @Column(nullable = true)

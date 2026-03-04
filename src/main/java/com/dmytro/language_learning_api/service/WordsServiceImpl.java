@@ -14,9 +14,13 @@ import com.dmytro.language_learning_api.repository.UsersRepository;
 import com.dmytro.language_learning_api.repository.WordsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -45,10 +49,28 @@ public class WordsServiceImpl implements WordsService {
         return wordsMapper.toDto(savedWord);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public WordsDTO getWordById(UUID wordId) {
         Words word = getWordOrThrow(wordId);
-        return wordsMapper.toDto(word);
+        //return wordsMapper.toDto(word);
+
+        WordsDTO dto = wordsMapper.toDto(word);
+
+        Set<UUID> synonymIds = word.getSynonyms() == null
+                ? Collections.emptySet()
+                : word.getSynonyms().stream()
+                .map(Words::getId)
+                .collect(Collectors.toSet());
+
+        System.out.println("Synonyms size: " + word.getSynonyms().size());
+        return new WordsDTO(
+                word.getId(),
+                word.getSourceLanguage(),
+                word.getOriginalWord(),
+                word.getOwner().getId(),
+                synonymIds
+        );
     }
 
     @Override
@@ -90,6 +112,21 @@ public class WordsServiceImpl implements WordsService {
         Words savedWord = wordsRepository.save(word);
 
         return wordsMapper.toDto(savedWord);
+    }
+
+    @Override
+    public void addSynonym(UUID wordId, UUID synonymId) {
+        Words word = wordsRepository.findById(wordId)
+                .orElseThrow(() -> new WordNotFoundException("Word not found"));
+
+        Words synonym = wordsRepository.findById(synonymId)
+                .orElseThrow(() -> new WordNotFoundException("Synonym word not found"));
+
+        word.getSynonyms().add(synonym);
+        synonym.getSynonyms().add(word);
+
+        wordsRepository.save(word);
+        wordsRepository.save(synonym);
     }
 
     @Override
