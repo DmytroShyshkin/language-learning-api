@@ -13,6 +13,9 @@ import com.dmytro.language_learning_api.model.Words;
 import com.dmytro.language_learning_api.repository.UsersRepository;
 import com.dmytro.language_learning_api.repository.WordsRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -93,8 +96,12 @@ public class WordsServiceImpl implements WordsService {
     }
 
     @Override
-    public List<WordsDTO> getAllWordsByOwnerId(UUID ownerId) {
-        List<Words> words = wordsRepository.findByOwnerId(ownerId);
+    public List<WordsDTO> getAllWordsByOwnerId(UUID ownerId, int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Words> wordsPage = wordsRepository.findByOwnerId(ownerId, pageable);
+        //List<Words> words = wordsRepository.findByOwnerId(ownerId);
+
+        List<Words> words = wordsPage.getContent();
 
         /*return words.stream()
                 .map(wordsMapper::toDto)
@@ -158,7 +165,9 @@ public class WordsServiceImpl implements WordsService {
     }
 
     // Clases auxiliares
-     private List<Words> getWordsByOwnerOrThrow(UUID ownerId) {
+
+    /*
+    private List<Words> getWordsByOwnerOrThrow(UUID ownerId) {
         List<Words> words = wordsRepository.findByOwnerId(ownerId);
 
         if (words.isEmpty()) {
@@ -167,7 +176,7 @@ public class WordsServiceImpl implements WordsService {
 
         return words;
     }
-
+    */
     private Words getWordOrThrow(UUID wordId) {
         return wordsRepository.findById(wordId)
                 .orElseThrow(() -> new WordNotFoundException(

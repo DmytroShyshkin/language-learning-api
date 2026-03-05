@@ -6,6 +6,7 @@ import com.dmytro.language_learning_api.dto.WordsDTO;
 import com.dmytro.language_learning_api.service.WordsService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,8 +31,12 @@ public class WordsController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<WordsDTO>> getAllWordsByOwnerId(@PathVariable UUID userId) {
-        return ResponseEntity.ok(wordsService.getAllWordsByOwnerId(userId));
+    public ResponseEntity<List<WordsDTO>> getAllWordsByOwnerId(
+            @PathVariable UUID userId,
+            @RequestParam(defaultValue = "0", required = false)int pageNo,
+            @RequestParam(defaultValue = "10", required = false)int pageSize
+    ) {
+        return ResponseEntity.ok(wordsService.getAllWordsByOwnerId(userId, pageNo, pageSize));
     }
 
     @PostMapping
