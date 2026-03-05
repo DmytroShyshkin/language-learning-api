@@ -3,6 +3,7 @@ package com.dmytro.language_learning_api.service;
 import com.dmytro.language_learning_api.dto.TranslationDTO;
 import com.dmytro.language_learning_api.dto.UpdateWordRequest;
 import com.dmytro.language_learning_api.dto.WordsDTO;
+import com.dmytro.language_learning_api.dto.response.WordRespons;
 import com.dmytro.language_learning_api.exception.NotFoundException.UserNotFoundException;
 import com.dmytro.language_learning_api.exception.NotFoundException.WordNotFoundException;
 import com.dmytro.language_learning_api.mapper.TranslationMapper;
@@ -96,17 +97,13 @@ public class WordsServiceImpl implements WordsService {
     }
 
     @Override
-    public List<WordsDTO> getAllWordsByOwnerId(UUID ownerId, int pageNo, int pageSize) {
+    public WordRespons getAllWordsByOwnerId(UUID ownerId, int pageNo, int pageSize) {
+    //public List<WordsDTO> getAllWordsByOwnerId(UUID ownerId, int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<Words> wordsPage = wordsRepository.findByOwnerId(ownerId, pageable);
         //List<Words> words = wordsRepository.findByOwnerId(ownerId);
-
         List<Words> words = wordsPage.getContent();
-
-        /*return words.stream()
-                .map(wordsMapper::toDto)
-                .toList();*/
-        return words.stream()
+        List<WordsDTO> wordsList = words.stream()
                 .map(word -> {
 
                     WordsDTO dto = wordsMapper.toDto(word);
@@ -127,6 +124,43 @@ public class WordsServiceImpl implements WordsService {
 
                 })
                 .toList();
+
+        WordRespons wordRespons = new WordRespons();
+        wordRespons.setContent(wordsList);
+        wordRespons.setPageNo(wordsPage.getNumber());
+        wordRespons.setPageSize(wordsPage.getSize());
+        wordRespons.setTotalPages(wordsPage.getTotalPages());
+        wordRespons.setTotalElements(wordsPage.getTotalElements());
+        wordRespons.setLast(wordsPage.isLast());
+
+        return wordRespons;
+
+        /*return words.stream()
+                .map(wordsMapper::toDto)
+                .toList();*/
+
+        /*return words.stream()
+                .map(word -> {
+
+                    WordsDTO dto = wordsMapper.toDto(word);
+
+                    Set<UUID> synonymIds = word.getSynonyms() == null
+                            ? Collections.emptySet()
+                            : word.getSynonyms().stream()
+                            .map(Words::getId)
+                            .collect(Collectors.toSet());
+
+                    return new WordsDTO(
+                            dto.id(),
+                            dto.sourceLanguage(),
+                            dto.originalWord(),
+                            dto.ownerId(),
+                            synonymIds
+                    );
+
+                })
+                .toList();*/
+
     }
 
     @Override

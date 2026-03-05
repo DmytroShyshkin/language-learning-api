@@ -3,6 +3,7 @@ package com.dmytro.language_learning_api.controller;
 import com.dmytro.language_learning_api.dto.TranslationDTO;
 import com.dmytro.language_learning_api.dto.UpdateWordRequest;
 import com.dmytro.language_learning_api.dto.WordsDTO;
+import com.dmytro.language_learning_api.dto.response.WordRespons;
 import com.dmytro.language_learning_api.service.WordsService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -31,12 +32,14 @@ public class WordsController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<WordsDTO>> getAllWordsByOwnerId(
+    public ResponseEntity<WordRespons> getAllWordsByOwnerId(
+    //public ResponseEntity<List<WordsDTO>> getAllWordsByOwnerId(
             @PathVariable UUID userId,
             @RequestParam(defaultValue = "0", required = false)int pageNo,
             @RequestParam(defaultValue = "10", required = false)int pageSize
     ) {
-        return ResponseEntity.ok(wordsService.getAllWordsByOwnerId(userId, pageNo, pageSize));
+        return new ResponseEntity<>(wordsService.getAllWordsByOwnerId(userId, pageNo, pageSize), HttpStatus.OK);
+        //return ResponseEntity.ok(wordsService.getAllWordsByOwnerId(userId, pageNo, pageSize));
     }
 
     @PostMapping
