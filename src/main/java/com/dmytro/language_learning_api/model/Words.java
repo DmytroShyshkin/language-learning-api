@@ -3,6 +3,7 @@ package com.dmytro.language_learning_api.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.util.*;
@@ -39,6 +40,7 @@ public class Words {
     private List<Translation> translations;
 
     @ManyToMany
+    @BatchSize(size = 20)
     @JoinTable(
             name = "word_synonyms",
             joinColumns = @JoinColumn(name = "word_id"),

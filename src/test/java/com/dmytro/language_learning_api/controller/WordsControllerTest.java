@@ -36,7 +36,8 @@ public class WordsControllerTest {
                 wordId,
                 "EN",
                 "word",
-                UUID.randomUUID()
+                UUID.randomUUID(),
+                null
         );
 
         when(wordsService.getWordById(wordId))
@@ -56,7 +57,8 @@ public class WordsControllerTest {
                 UUID.randomUUID(),
                 "en",
                 "word",
-                UUID.randomUUID()
+                UUID.randomUUID(),
+                null
         );
 
         when(wordsService.createWord(any()))
@@ -89,13 +91,15 @@ public class WordsControllerTest {
                         UUID.randomUUID(),
                         "en",
                         "hello",
-                        userId
+                        userId,
+                        null
                 ),
                 new WordsDTO(
                         UUID.randomUUID(),
                         "en",
                         "world",
-                        userId
+                        userId,
+                        null
                 )
         );
 
@@ -119,7 +123,8 @@ public class WordsControllerTest {
                 wordId,
                 "ua",
                 "newWord",
-                UUID.randomUUID()
+                UUID.randomUUID(),
+                null
         );
 
         UpdateWordRequest request =
@@ -152,7 +157,8 @@ public class WordsControllerTest {
                 wordId,
                 "ua",
                 "text",
-                UUID.randomUUID()
+                UUID.randomUUID(),
+                null
         );
 
         when(wordsService.addTranslationToWord(eq(wordId), any(TranslationDTO.class)))

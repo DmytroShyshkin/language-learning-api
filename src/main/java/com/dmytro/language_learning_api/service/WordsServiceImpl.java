@@ -63,7 +63,7 @@ public class WordsServiceImpl implements WordsService {
                 .map(Words::getId)
                 .collect(Collectors.toSet());
 
-        System.out.println("Synonyms size: " + word.getSynonyms().size());
+        //System.out.println("Synonyms size: " + word.getSynonyms().size());
         return new WordsDTO(
                 word.getId(),
                 word.getSourceLanguage(),
@@ -96,8 +96,29 @@ public class WordsServiceImpl implements WordsService {
     public List<WordsDTO> getAllWordsByOwnerId(UUID ownerId) {
         List<Words> words = wordsRepository.findByOwnerId(ownerId);
 
-        return words.stream()
+        /*return words.stream()
                 .map(wordsMapper::toDto)
+                .toList();*/
+        return words.stream()
+                .map(word -> {
+
+                    WordsDTO dto = wordsMapper.toDto(word);
+
+                    Set<UUID> synonymIds = word.getSynonyms() == null
+                            ? Collections.emptySet()
+                            : word.getSynonyms().stream()
+                            .map(Words::getId)
+                            .collect(Collectors.toSet());
+
+                    return new WordsDTO(
+                            dto.id(),
+                            dto.sourceLanguage(),
+                            dto.originalWord(),
+                            dto.ownerId(),
+                            synonymIds
+                    );
+
+                })
                 .toList();
     }
 
@@ -122,6 +143,7 @@ public class WordsServiceImpl implements WordsService {
         Words synonym = wordsRepository.findById(synonymId)
                 .orElseThrow(() -> new WordNotFoundException("Synonym word not found"));
 
+        /**/
         word.getSynonyms().add(synonym);
         synonym.getSynonyms().add(word);
 
@@ -136,7 +158,7 @@ public class WordsServiceImpl implements WordsService {
     }
 
     // Clases auxiliares
-    private List<Words> getWordsByOwnerOrThrow(UUID ownerId) {
+     private List<Words> getWordsByOwnerOrThrow(UUID ownerId) {
         List<Words> words = wordsRepository.findByOwnerId(ownerId);
 
         if (words.isEmpty()) {

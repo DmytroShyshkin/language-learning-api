@@ -36,8 +36,8 @@ public class TranslationControllerTest {
                 UUID.randomUUID(),
                 "ua",
                 "translationText",
-                "syn",
-                new ArrayList<>()
+                "syn"
+                //new ArrayList<>()
         );
 
         when(translationService.addTranslation(eq(wordId), any(TranslationDTO.class)))
@@ -70,8 +70,8 @@ public class TranslationControllerTest {
                 translationId,
                 "ua",
                 "translationText",
-                "syn",
-                new ArrayList<>()
+                "syn"
+                //new ArrayList<>()
         );
 
         when(translationService.getTranslationById(translationId))
@@ -104,8 +104,8 @@ public class TranslationControllerTest {
                 translationId,
                 "ua",
                 "translationText",
-                "syn",
-                new ArrayList<>()
+                "syn"
+                //new ArrayList<>()
         );
 
         when(translationService.updateTranslation(eq(translationId), any(TranslationDTO.class)))

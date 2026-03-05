@@ -44,14 +44,14 @@ public class TranslationServiceTest {
         when(wordsRepository.findById(id))
                 .thenReturn(Optional.of(word));
 
-        List<SynonymDTO> synonyms = List.of();
+        //List<SynonymDTO> synonyms = List.of();
 
         TranslationDTO translationDTO = new TranslationDTO(
                 UUID.randomUUID(),
                 "EN",
                 "text",
-                "syn",
-                synonyms
+                "syn"
+                //synonyms
         );
 
         Translation translation = new Translation();
@@ -70,8 +70,8 @@ public class TranslationServiceTest {
                 translation.getId(),
                 translation.getTargetLanguage(),
                 translation.getTranslatedWord(),
-                translation.getDescription(),
-                synonyms
+                translation.getDescription()
+                //synonyms
         );
 
         when(translationMapper.toDto(translation))
@@ -98,14 +98,14 @@ public class TranslationServiceTest {
         when(translationRepository.findById(id))
                 .thenReturn(Optional.of(translation));
 
-        List<SynonymDTO> synonyms = List.of();
+        //List<SynonymDTO> synonyms = List.of();
 
         TranslationDTO translationDTO = new TranslationDTO(
                 translation.getId(),
                 translation.getTargetLanguage(),
                 translation.getTranslatedWord(),
-                translation.getDescription(),
-                synonyms
+                translation.getDescription()
+                //synonyms
         );
 
         when(translationMapper.toDto(translation))
@@ -128,14 +128,14 @@ public class TranslationServiceTest {
         when(translationRepository.findById(id))
                 .thenReturn(Optional.of(translation));
 
-        List<SynonymDTO> synonyms = List.of();
+        //List<SynonymDTO> synonyms = List.of();
 
         TranslationDTO translationDTO = new TranslationDTO(
                 UUID.randomUUID(),
                 "EN",
                 "text",
-                "syn",
-                synonyms
+                "syn"
+                //synonyms
         );
 
         translation.setTargetLanguage(translationDTO.targetLanguage());

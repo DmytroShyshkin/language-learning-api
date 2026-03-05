@@ -18,8 +18,9 @@ public interface WordsMapper {
     @Mapping(target = "synonymIds", ignore = true)
     WordsDTO toDto(Words word);
 
-    default Set<UUID> mapSynonymIds(Set<Words> synonyms) {
+    default Set<UUID> map(Set<Words> synonyms) {
         if (synonyms == null) return Collections.emptySet();
+
         return synonyms.stream()
                 .map(Words::getId)
                 .collect(Collectors.toSet());

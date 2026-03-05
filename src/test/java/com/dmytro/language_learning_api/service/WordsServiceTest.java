@@ -49,7 +49,8 @@ public class WordsServiceTest {
                 null,
                 "EN",
                 "orWord",
-                ownerId
+                ownerId,
+                null
         );
 
         Users owner = new Users();
@@ -80,7 +81,8 @@ public class WordsServiceTest {
                         savedWord.getId(),
                         savedWord.getSourceLanguage(),
                         savedWord.getOriginalWord(),
-                        ownerId
+                        ownerId,
+                        null
                 ));
 
         WordsDTO result = wordsService.createWord(wordDto);
@@ -101,7 +103,7 @@ public class WordsServiceTest {
 
         // No se puede usar toDto() aquí, ya que Mockito se quejará.
         // WordsDTO wordDto = wordsMapper.toDto(word);
-        WordsDTO wordDto = new WordsDTO(word.getId(), word.getSourceLanguage(), word.getOriginalWord(), null);
+        WordsDTO wordDto = new WordsDTO(word.getId(), word.getSourceLanguage(), word.getOriginalWord(), null, null);
 
         when(wordsRepository.findById(id))
                 .thenReturn(Optional.of(word));
@@ -131,7 +133,7 @@ public class WordsServiceTest {
                 new UpdateWordRequest("UA", "newWord");
 
         WordsDTO updatedDto =
-                new WordsDTO(id, "UA", "newWord", null);
+                new WordsDTO(id, "UA", "newWord", null, null);
 
         when(wordsRepository.findById(id))
                 .thenReturn(Optional.of(word));
@@ -167,7 +169,7 @@ public class WordsServiceTest {
                 new UpdateWordRequest(null, null);
 
         WordsDTO dto =
-                new WordsDTO(id, "EN", "oldWord", null);
+                new WordsDTO(id, "EN", "oldWord", null, null);
 
         when(wordsRepository.findById(id))
                 .thenReturn(Optional.of(word));
@@ -199,7 +201,7 @@ public class WordsServiceTest {
                 new UpdateWordRequest(" ", "");
 
         WordsDTO dto =
-                new WordsDTO(id, "EN", "oldWord", null);
+                new WordsDTO(id, "EN", "oldWord", null, null);
 
         when(wordsRepository.findById(id))
                 .thenReturn(Optional.of(word));
@@ -231,8 +233,8 @@ public class WordsServiceTest {
 
         List<Words> wordsList = List.of(word1, word2);
 
-        WordsDTO dto1 = new WordsDTO(word1.getId(), null, "hello", null);
-        WordsDTO dto2 = new WordsDTO(word2.getId(), null, "world", null);
+        WordsDTO dto1 = new WordsDTO(word1.getId(), null, "hello", null, null);
+        WordsDTO dto2 = new WordsDTO(word2.getId(), null, "world", null, null);
 
         when(wordsRepository.findByOwnerId(ownerId))
                 .thenReturn(wordsList);
@@ -266,14 +268,14 @@ public class WordsServiceTest {
         translation.setId(UUID.randomUUID());
         translation.setTargetLanguage("UA");
         translation.setTranslatedWord("text");
-        translation.setSynonyms(new ArrayList<>());
+        //translation.setSynonyms(new ArrayList<>());
 
         TranslationDTO translationDto = new TranslationDTO(
                 translation.getId(),
                 translation.getTargetLanguage(),
                 translation.getTranslatedWord(),
-                translation.getTargetLanguage(),
-                new ArrayList<>()
+                translation.getTargetLanguage()
+                //new ArrayList<>()
         );
 
         when(wordsRepository.findById(id))
@@ -286,7 +288,7 @@ public class WordsServiceTest {
                 .thenReturn(word);
 
         when(wordsMapper.toDto(word))
-                .thenReturn(new WordsDTO(id, "EN", "orWord", null));
+                .thenReturn(new WordsDTO(id, "EN", "orWord", null, null));
 
         WordsDTO result =
                 wordsService.addTranslationToWord(id, translationDto);
