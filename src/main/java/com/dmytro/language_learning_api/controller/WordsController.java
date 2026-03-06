@@ -33,13 +33,11 @@ public class WordsController {
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<WordRespons> getAllWordsByOwnerId(
-    //public ResponseEntity<List<WordsDTO>> getAllWordsByOwnerId(
             @PathVariable UUID userId,
             @RequestParam(defaultValue = "0", required = false)int pageNo,
             @RequestParam(defaultValue = "10", required = false)int pageSize
     ) {
         return new ResponseEntity<>(wordsService.getAllWordsByOwnerId(userId, pageNo, pageSize), HttpStatus.OK);
-        //return ResponseEntity.ok(wordsService.getAllWordsByOwnerId(userId, pageNo, pageSize));
     }
 
     @PostMapping

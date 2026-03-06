@@ -1,6 +1,7 @@
 package com.dmytro.language_learning_api.controller;
 
 import com.dmytro.language_learning_api.dto.TranslationDTO;
+import com.dmytro.language_learning_api.dto.response.TranslationRespons;
 import com.dmytro.language_learning_api.service.TranslationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +21,12 @@ public class TranslationController {
     private final TranslationService translationService;
 
     @GetMapping
-    public ResponseEntity<List<TranslationDTO>> getTranslations(@PathVariable UUID wordId) {
-        return ResponseEntity.ok(translationService.getTranslationsByWordId(wordId));
+    public ResponseEntity<TranslationRespons> getTranslations(
+            @PathVariable UUID wordId,
+            @RequestParam(defaultValue = "0", required = false)int pageNo,
+            @RequestParam(defaultValue = "10", required = false)int pageSize
+    ) {
+        return ResponseEntity.ok(translationService.getTranslationsByWordId(wordId,  pageNo, pageSize));
     }
 
     @GetMapping("/{translationId}")

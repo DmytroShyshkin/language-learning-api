@@ -67,7 +67,6 @@ public class WordsServiceImpl implements WordsService {
                 .map(Words::getId)
                 .collect(Collectors.toSet());
 
-        //System.out.println("Synonyms size: " + word.getSynonyms().size());
         return new WordsDTO(
                 word.getId(),
                 word.getSourceLanguage(),
@@ -98,10 +97,8 @@ public class WordsServiceImpl implements WordsService {
 
     @Override
     public WordRespons getAllWordsByOwnerId(UUID ownerId, int pageNo, int pageSize) {
-    //public List<WordsDTO> getAllWordsByOwnerId(UUID ownerId, int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<Words> wordsPage = wordsRepository.findByOwnerId(ownerId, pageable);
-        //List<Words> words = wordsRepository.findByOwnerId(ownerId);
         List<Words> words = wordsPage.getContent();
         List<WordsDTO> wordsList = words.stream()
                 .map(word -> {
@@ -134,33 +131,6 @@ public class WordsServiceImpl implements WordsService {
         wordRespons.setLast(wordsPage.isLast());
 
         return wordRespons;
-
-        /*return words.stream()
-                .map(wordsMapper::toDto)
-                .toList();*/
-
-        /*return words.stream()
-                .map(word -> {
-
-                    WordsDTO dto = wordsMapper.toDto(word);
-
-                    Set<UUID> synonymIds = word.getSynonyms() == null
-                            ? Collections.emptySet()
-                            : word.getSynonyms().stream()
-                            .map(Words::getId)
-                            .collect(Collectors.toSet());
-
-                    return new WordsDTO(
-                            dto.id(),
-                            dto.sourceLanguage(),
-                            dto.originalWord(),
-                            dto.ownerId(),
-                            synonymIds
-                    );
-
-                })
-                .toList();*/
-
     }
 
     @Override
@@ -184,7 +154,6 @@ public class WordsServiceImpl implements WordsService {
         Words synonym = wordsRepository.findById(synonymId)
                 .orElseThrow(() -> new WordNotFoundException("Synonym word not found"));
 
-        /**/
         word.getSynonyms().add(synonym);
         synonym.getSynonyms().add(word);
 
@@ -199,18 +168,6 @@ public class WordsServiceImpl implements WordsService {
     }
 
     // Clases auxiliares
-
-    /*
-    private List<Words> getWordsByOwnerOrThrow(UUID ownerId) {
-        List<Words> words = wordsRepository.findByOwnerId(ownerId);
-
-        if (words.isEmpty()) {
-            throw new UserNotFoundException("User with id " + ownerId + " has no words");
-        }
-
-        return words;
-    }
-    */
     private Words getWordOrThrow(UUID wordId) {
         return wordsRepository.findById(wordId)
                 .orElseThrow(() -> new WordNotFoundException(
