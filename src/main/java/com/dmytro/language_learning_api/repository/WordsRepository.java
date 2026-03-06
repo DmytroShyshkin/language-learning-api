@@ -9,15 +9,6 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.UUID;
 
 public interface WordsRepository extends JpaRepository<Words, UUID> {
-    /*
-    @Query("""
-       SELECT w
-       FROM Words w
-       LEFT JOIN FETCH w.synonyms
-       WHERE w.owner.id = :ownerId
-       """)
-    List<Words> findByOwnerId(UUID ownerId);
-    */
     @Query("""
        SELECT w
        FROM Words w
