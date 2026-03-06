@@ -16,10 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -95,15 +92,21 @@ public class WordsServiceTest {
     @Test
     void shouldReturnWordWhenWordExists() {
         UUID id = UUID.randomUUID();
+        UUID ownerId = UUID.randomUUID();
+
+        Users owner = new Users();
+        owner.setId(ownerId);
 
         Words word = new Words();
         word.setId(id);
         word.setSourceLanguage("EN");
         word.setOriginalWord("orWord");
+        word.setOwner(owner);
+        word.setSynonyms(null);
 
         // No se puede usar toDto() aquí, ya que Mockito se quejará.
         // WordsDTO wordDto = wordsMapper.toDto(word);
-        WordsDTO wordDto = new WordsDTO(word.getId(), word.getSourceLanguage(), word.getOriginalWord(), null, null);
+        WordsDTO wordDto = new WordsDTO(word.getId(), word.getSourceLanguage(), word.getOriginalWord(), word.getOwner().getId(), Collections.emptySet());
 
         when(wordsRepository.findById(id))
                 .thenReturn(Optional.of(word));

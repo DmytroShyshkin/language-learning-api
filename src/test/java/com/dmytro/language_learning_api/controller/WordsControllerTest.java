@@ -73,7 +73,7 @@ public class WordsControllerTest {
                         "ownerId": "%s"
                     }
                     """.formatted(wordDto.ownerId())))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.sourceLanguage").value("en"))
                 .andExpect(jsonPath("$.originalWord").value("word"));
