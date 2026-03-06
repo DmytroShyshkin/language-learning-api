@@ -1,12 +1,16 @@
 package com.dmytro.language_learning_api.service;
 
 import com.dmytro.language_learning_api.dto.UsersDTO;
+import com.dmytro.language_learning_api.dto.response.UserRespons;
 import com.dmytro.language_learning_api.exception.ConflictException.EmailAlreadyExistsException;
 import com.dmytro.language_learning_api.exception.ConflictException.UsernameAlreadyExistsException;
 import com.dmytro.language_learning_api.exception.NotFoundException.UserNotFoundException;
 import com.dmytro.language_learning_api.mapper.UsersMapper;
 import com.dmytro.language_learning_api.model.Users;
 import com.dmytro.language_learning_api.repository.UsersRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,11 +25,22 @@ public class UserServiceImpl implements UserService {
     private final UsersMapper usersMapper;
 
     @Override
-    public List<UsersDTO> getAllUsers() {
-        return usersRepository.findAll()
-                .stream()
-                .map(usersMapper::toDto)
-                .toList();
+    public UserRespons getAllUsers(int pageNo, int pageSize) {
+    //public List<UsersDTO> getAllUsers() {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Users> usersPage = usersRepository.findAll(pageable);
+        List<Users> users = usersPage.getContent();
+        List<UsersDTO>usersList = users.stream().map(usersMapper::toDto).toList();
+
+        UserRespons userRespons = new UserRespons();
+        userRespons.setContent(usersList);
+        userRespons.setPageNo(usersPage.getNumber());
+        userRespons.setPageSize(usersPage.getSize());
+        userRespons.setTotalPages(usersPage.getTotalPages());
+        userRespons.setTotalElements(usersPage.getTotalElements());
+        userRespons.setLast(usersPage.isLast());
+
+        return userRespons;
     }
 
     @Override

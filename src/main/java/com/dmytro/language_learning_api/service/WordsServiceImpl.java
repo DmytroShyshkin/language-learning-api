@@ -3,6 +3,7 @@ package com.dmytro.language_learning_api.service;
 import com.dmytro.language_learning_api.dto.TranslationDTO;
 import com.dmytro.language_learning_api.dto.UpdateWordRequest;
 import com.dmytro.language_learning_api.dto.WordsDTO;
+import com.dmytro.language_learning_api.dto.response.WordRespons;
 import com.dmytro.language_learning_api.exception.NotFoundException.UserNotFoundException;
 import com.dmytro.language_learning_api.exception.NotFoundException.WordNotFoundException;
 import com.dmytro.language_learning_api.mapper.TranslationMapper;
@@ -13,6 +14,9 @@ import com.dmytro.language_learning_api.model.Words;
 import com.dmytro.language_learning_api.repository.UsersRepository;
 import com.dmytro.language_learning_api.repository.WordsRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -63,7 +67,6 @@ public class WordsServiceImpl implements WordsService {
                 .map(Words::getId)
                 .collect(Collectors.toSet());
 
-        //System.out.println("Synonyms size: " + word.getSynonyms().size());
         return new WordsDTO(
                 word.getId(),
                 word.getSourceLanguage(),
@@ -93,13 +96,11 @@ public class WordsServiceImpl implements WordsService {
     }
 
     @Override
-    public List<WordsDTO> getAllWordsByOwnerId(UUID ownerId) {
-        List<Words> words = wordsRepository.findByOwnerId(ownerId);
-
-        /*return words.stream()
-                .map(wordsMapper::toDto)
-                .toList();*/
-        return words.stream()
+    public WordRespons getAllWordsByOwnerId(UUID ownerId, int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Words> wordsPage = wordsRepository.findByOwnerId(ownerId, pageable);
+        List<Words> words = wordsPage.getContent();
+        List<WordsDTO> wordsList = words.stream()
                 .map(word -> {
 
                     WordsDTO dto = wordsMapper.toDto(word);
@@ -120,6 +121,16 @@ public class WordsServiceImpl implements WordsService {
 
                 })
                 .toList();
+
+        WordRespons wordRespons = new WordRespons();
+        wordRespons.setContent(wordsList);
+        wordRespons.setPageNo(wordsPage.getNumber());
+        wordRespons.setPageSize(wordsPage.getSize());
+        wordRespons.setTotalPages(wordsPage.getTotalPages());
+        wordRespons.setTotalElements(wordsPage.getTotalElements());
+        wordRespons.setLast(wordsPage.isLast());
+
+        return wordRespons;
     }
 
     @Override
@@ -143,7 +154,6 @@ public class WordsServiceImpl implements WordsService {
         Words synonym = wordsRepository.findById(synonymId)
                 .orElseThrow(() -> new WordNotFoundException("Synonym word not found"));
 
-        /**/
         word.getSynonyms().add(synonym);
         synonym.getSynonyms().add(word);
 
@@ -158,16 +168,6 @@ public class WordsServiceImpl implements WordsService {
     }
 
     // Clases auxiliares
-     private List<Words> getWordsByOwnerOrThrow(UUID ownerId) {
-        List<Words> words = wordsRepository.findByOwnerId(ownerId);
-
-        if (words.isEmpty()) {
-            throw new UserNotFoundException("User with id " + ownerId + " has no words");
-        }
-
-        return words;
-    }
-
     private Words getWordOrThrow(UUID wordId) {
         return wordsRepository.findById(wordId)
                 .orElseThrow(() -> new WordNotFoundException(
