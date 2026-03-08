@@ -1,7 +1,7 @@
 package com.dmytro.language_learning_api.controller;
 
 import com.dmytro.language_learning_api.dto.TranslationDTO;
-import com.dmytro.language_learning_api.dto.response.TranslationRespons;
+import com.dmytro.language_learning_api.dto.response.PageResponse;
 import com.dmytro.language_learning_api.service.TranslationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -21,7 +20,7 @@ public class TranslationController {
     private final TranslationService translationService;
 
     @GetMapping
-    public ResponseEntity<TranslationRespons> getTranslations(
+    public ResponseEntity<PageResponse<TranslationDTO>> getTranslations(
             @PathVariable UUID wordId,
             @RequestParam(defaultValue = "0", required = false)int pageNo,
             @RequestParam(defaultValue = "10", required = false)int pageSize

@@ -1,7 +1,7 @@
 package com.dmytro.language_learning_api.controller;
 
 import com.dmytro.language_learning_api.dto.UsersDTO;
-import com.dmytro.language_learning_api.dto.response.UserRespons;
+import com.dmytro.language_learning_api.dto.response.PageResponse;
 import com.dmytro.language_learning_api.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -22,7 +21,7 @@ public class UsersController {
     private final UserService userService;
 
     @GetMapping
-    public ResponseEntity<UserRespons> getAllUsers(
+    public ResponseEntity<PageResponse<UsersDTO>> getAllUsers(
     //public ResponseEntity<List<UsersDTO>> getAllUsers(
             @RequestParam(defaultValue = "0", required = false)int pageNo,
             @RequestParam(defaultValue = "10", required = false)int pageSize

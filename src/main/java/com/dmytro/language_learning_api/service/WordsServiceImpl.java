@@ -3,7 +3,7 @@ package com.dmytro.language_learning_api.service;
 import com.dmytro.language_learning_api.dto.TranslationDTO;
 import com.dmytro.language_learning_api.dto.UpdateWordRequest;
 import com.dmytro.language_learning_api.dto.WordsDTO;
-import com.dmytro.language_learning_api.dto.response.WordRespons;
+import com.dmytro.language_learning_api.dto.response.PageResponse;
 import com.dmytro.language_learning_api.exception.NotFoundException.UserNotFoundException;
 import com.dmytro.language_learning_api.exception.NotFoundException.WordNotFoundException;
 import com.dmytro.language_learning_api.mapper.TranslationMapper;
@@ -96,7 +96,7 @@ public class WordsServiceImpl implements WordsService {
     }
 
     @Override
-    public WordRespons getAllWordsByOwnerId(UUID ownerId, int pageNo, int pageSize) {
+    public PageResponse<WordsDTO> getAllWordsByOwnerId(UUID ownerId, int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<Words> wordsPage = wordsRepository.findByOwnerId(ownerId, pageable);
         List<Words> words = wordsPage.getContent();
@@ -122,7 +122,7 @@ public class WordsServiceImpl implements WordsService {
                 })
                 .toList();
 
-        WordRespons wordRespons = new WordRespons();
+        PageResponse<WordsDTO> wordRespons = new PageResponse<>();
         wordRespons.setContent(wordsList);
         wordRespons.setPageNo(wordsPage.getNumber());
         wordRespons.setPageSize(wordsPage.getSize());

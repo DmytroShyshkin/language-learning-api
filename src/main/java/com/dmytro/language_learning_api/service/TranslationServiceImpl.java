@@ -1,7 +1,7 @@
 package com.dmytro.language_learning_api.service;
 
 import com.dmytro.language_learning_api.dto.TranslationDTO;
-import com.dmytro.language_learning_api.dto.response.TranslationRespons;
+import com.dmytro.language_learning_api.dto.response.PageResponse;
 import com.dmytro.language_learning_api.exception.NotFoundException.TranslationNotFoundException;
 import com.dmytro.language_learning_api.exception.NotFoundException.WordNotFoundException;
 import com.dmytro.language_learning_api.mapper.TranslationMapper;
@@ -27,7 +27,7 @@ public class TranslationServiceImpl implements TranslationService {
     private final WordsRepository wordsRepository;
 
     @Override
-    public TranslationRespons getTranslationsByWordId(UUID wordId, int pageNo, int pageSize) {
+    public PageResponse<TranslationDTO> getTranslationsByWordId(UUID wordId, int pageNo, int pageSize) {
     //public List<TranslationDTO> getTranslationsByWordId(UUID wordId, int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<Translation> translationsPage =
@@ -39,7 +39,7 @@ public class TranslationServiceImpl implements TranslationService {
         List<TranslationDTO> translationsList = translation.stream().
                 map(translationMapper::toDto).toList();
 
-        TranslationRespons translationRespons = new TranslationRespons();
+        PageResponse<TranslationDTO> translationRespons = new PageResponse<TranslationDTO>();
         translationRespons.setContent(translationsList);
         translationRespons.setPageNo(translationsPage.getNumber());
         translationRespons.setPageSize(translationsPage.getSize());

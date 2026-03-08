@@ -1,14 +1,13 @@
 package com.dmytro.language_learning_api.service;
 
 import com.dmytro.language_learning_api.dto.UsersDTO;
-import com.dmytro.language_learning_api.dto.response.UserRespons;
+import com.dmytro.language_learning_api.dto.response.PageResponse;
 
-import java.util.List;
 import java.util.UUID;
 
 public interface UserService {
 
-    UserRespons getAllUsers(int pageNo, int pageSize);
+    PageResponse<UsersDTO> getAllUsers(int pageNo, int pageSize);
     //List<UsersDTO> getAllUsers(int pageNo, int pageSize);
     UsersDTO getUserById(UUID userId);
 

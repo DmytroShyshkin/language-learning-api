@@ -1,7 +1,7 @@
 package com.dmytro.language_learning_api.service;
 
 import com.dmytro.language_learning_api.dto.UsersDTO;
-import com.dmytro.language_learning_api.dto.response.UserRespons;
+import com.dmytro.language_learning_api.dto.response.PageResponse;
 import com.dmytro.language_learning_api.exception.ConflictException.EmailAlreadyExistsException;
 import com.dmytro.language_learning_api.exception.ConflictException.UsernameAlreadyExistsException;
 import com.dmytro.language_learning_api.exception.NotFoundException.UserNotFoundException;
@@ -25,14 +25,14 @@ public class UserServiceImpl implements UserService {
     private final UsersMapper usersMapper;
 
     @Override
-    public UserRespons getAllUsers(int pageNo, int pageSize) {
+    public PageResponse<UsersDTO> getAllUsers(int pageNo, int pageSize) {
     //public List<UsersDTO> getAllUsers() {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<Users> usersPage = usersRepository.findAll(pageable);
         List<Users> users = usersPage.getContent();
         List<UsersDTO>usersList = users.stream().map(usersMapper::toDto).toList();
 
-        UserRespons userRespons = new UserRespons();
+        PageResponse<UsersDTO> userRespons = new PageResponse<>();
         userRespons.setContent(usersList);
         userRespons.setPageNo(usersPage.getNumber());
         userRespons.setPageSize(usersPage.getSize());
