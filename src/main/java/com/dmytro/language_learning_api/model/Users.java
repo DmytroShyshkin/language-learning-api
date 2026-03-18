@@ -31,4 +31,7 @@ public class Users {
 
     @Column(nullable = false)
     private String username;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
 }
