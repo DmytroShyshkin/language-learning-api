@@ -22,7 +22,6 @@ public class Words {
     @UuidGenerator
     private UUID id;
 
-    // Язык исходного слова: рекомендуем ISO code, напр. "en", "es", "uk"
     @Column(nullable = false, length = 2)
     @Pattern(regexp = "^[a-z]{2}(-[A-Z]{2})?$", message = "Language must be an ISO code like 'en' or 'en-US'")
     private String sourceLanguage;

@@ -22,7 +22,6 @@ public class UsersController {
 
     @GetMapping
     public ResponseEntity<PageResponse<UsersDTO>> getAllUsers(
-    //public ResponseEntity<List<UsersDTO>> getAllUsers(
             @RequestParam(defaultValue = "0", required = false)int pageNo,
             @RequestParam(defaultValue = "10", required = false)int pageSize
     ) {
