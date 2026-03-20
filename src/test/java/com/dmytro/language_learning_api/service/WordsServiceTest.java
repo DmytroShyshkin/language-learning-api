@@ -46,7 +46,7 @@ public class WordsServiceTest {
                 null,
                 "EN",
                 "orWord",
-                ownerId,
+                //ownerId,
                 null
         );
 
@@ -78,7 +78,7 @@ public class WordsServiceTest {
                         savedWord.getId(),
                         savedWord.getSourceLanguage(),
                         savedWord.getOriginalWord(),
-                        ownerId,
+                        //ownerId,
                         null
                 ));
 

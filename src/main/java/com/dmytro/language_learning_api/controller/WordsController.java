@@ -1,5 +1,6 @@
 package com.dmytro.language_learning_api.controller;
 
+import com.dmytro.language_learning_api.dto.CreateWordRequestDTO;
 import com.dmytro.language_learning_api.dto.TranslationDTO;
 import com.dmytro.language_learning_api.dto.UpdateWordRequest;
 import com.dmytro.language_learning_api.dto.WordsDTO;
@@ -39,10 +40,10 @@ public class WordsController {
     }
 
     @PostMapping
-    public ResponseEntity<WordsDTO> createWord(@Valid @RequestBody WordsDTO wordsDto) {
+    public ResponseEntity<WordsDTO> createWord(@Valid @RequestBody CreateWordRequestDTO request) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(wordsService.createWord(wordsDto));
+                .body(wordsService.createWord(request));
     }
 
     @PutMapping("/update-word/{wordId}")

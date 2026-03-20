@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = "spring")
 public interface WordsMapper {
 
-    @Mapping(target = "ownerId", source = "owner.id")
+    //@Mapping(target = "ownerId", source = "owner.id")
     @Mapping(target = "synonymIds", ignore = true)
     WordsDTO toDto(Words word);
 

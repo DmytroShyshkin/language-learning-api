@@ -1,5 +1,6 @@
 package com.dmytro.language_learning_api.service;
 
+import com.dmytro.language_learning_api.dto.CreateWordRequestDTO;
 import com.dmytro.language_learning_api.dto.TranslationDTO;
 import com.dmytro.language_learning_api.dto.UpdateWordRequest;
 import com.dmytro.language_learning_api.dto.WordsDTO;
@@ -13,10 +14,13 @@ import com.dmytro.language_learning_api.model.Users;
 import com.dmytro.language_learning_api.model.Words;
 import com.dmytro.language_learning_api.repository.UsersRepository;
 import com.dmytro.language_learning_api.repository.WordsRepository;
+import com.dmytro.language_learning_api.security.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,20 +41,47 @@ public class WordsServiceImpl implements WordsService {
     private final WordsRepository wordsRepository;
     private final UsersRepository usersRepository;
 
+    // Security helper
+    private final JwtUtil jwtUtil;
+
     @Override
-    public WordsDTO createWord(WordsDTO dto) {
+    public WordsDTO createWord(CreateWordRequestDTO request) {
+        String email = SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getName();
+
+        Users user = usersRepository.findByEmail(email)
+                .orElseThrow();
+
+        Words word = new Words();
+        word.setOriginalWord(request.originalWord());
+        word.setSourceLanguage(request.sourceLanguage());
+        word.setOwner(user);
+
+        return wordsMapper.toDto(wordsRepository.save(word));
+
+        /*
         Users owner = usersRepository.findById(dto.ownerId())
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
+        */
+        /*
+        Users owner = usersRepository.findByEmail(jwtUtil.getCurrentUserEmail())
+                .orElseThrow(() -> new UserNotFoundException("No users in DB"));
+         */
+        /*
+        Users owner = jwtUtil.getCurrentUser();
 
         Words word = wordsMapper.fromDto(dto);
         word.setOwner(owner);
+        */
         /*
         word.setSourceLanguage(dto.sourceLanguage());
         word.setOriginalWord(dto.originalWord());
-
         */
+        /*
         Words savedWord = wordsRepository.save(word);
         return wordsMapper.toDto(savedWord);
+        */
     }
 
     @Transactional(readOnly = true)
@@ -71,7 +102,7 @@ public class WordsServiceImpl implements WordsService {
                 word.getId(),
                 word.getSourceLanguage(),
                 word.getOriginalWord(),
-                word.getOwner().getId(),
+                //word.getOwner().getId(),
                 synonymIds
         );
     }
@@ -115,7 +146,7 @@ public class WordsServiceImpl implements WordsService {
                             dto.id(),
                             dto.sourceLanguage(),
                             dto.originalWord(),
-                            dto.ownerId(),
+                            //dto.ownerId(),
                             synonymIds
                     );
 
@@ -153,6 +184,13 @@ public class WordsServiceImpl implements WordsService {
 
         Words synonym = wordsRepository.findById(synonymId)
                 .orElseThrow(() -> new WordNotFoundException("Synonym word not found"));
+
+        Users currentUser = jwtUtil.getCurrentUser();
+
+        if (!word.getOwner().equals(currentUser) ||
+                !synonym.getOwner().equals(currentUser)) {
+            throw new AccessDeniedException("You don't own these words");
+        }
 
         word.getSynonyms().add(synonym);
         synonym.getSynonyms().add(word);

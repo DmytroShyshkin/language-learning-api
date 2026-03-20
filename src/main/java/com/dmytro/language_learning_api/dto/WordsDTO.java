@@ -19,8 +19,8 @@ public record WordsDTO(
         @NotBlank
         @Size(min = 1, max = 100)
         String originalWord,
-        @NotNull(message = "Owner id is required")
-        UUID ownerId,
+        //@NotNull(message = "Owner id is required")
+        //UUID ownerId,
         @Nullable
         Set<UUID> synonymIds
         )
