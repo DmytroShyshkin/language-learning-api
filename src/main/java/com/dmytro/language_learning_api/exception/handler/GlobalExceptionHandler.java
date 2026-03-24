@@ -68,7 +68,7 @@ public class GlobalExceptionHandler {
                 fieldErrors
         );
 
-        log.warn("Validation failed: {}", fieldErrors);
+        log.warn("Validation failed on {}: {}", req.getRequestURI(), fieldErrors);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(response);
@@ -119,7 +119,7 @@ public class GlobalExceptionHandler {
         );
 
         log.warn("Conflict: {}", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
     }
 
     // Error type: 500 Fallback
@@ -133,11 +133,11 @@ public class GlobalExceptionHandler {
                 LocalDateTime.now(),
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
-                "Internal server error. Message: " + ex.getMessage(),
+                "Internal server error.",
                 req.getRequestURI()
         );
 
-        log.error("Unhandled exception occurred", ex);
+        log.error("Unhandled exception on {}: {}", req.getRequestURI(), ex.getMessage(), ex);
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(response);
