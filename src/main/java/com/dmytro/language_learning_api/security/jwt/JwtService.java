@@ -13,8 +13,6 @@ import java.util.Date;
 
 @Service
 public class JwtService {
-    //private final String SECRET_KEY = "fZOMG1sttJumrgaZOt2aPwCFLe8cdMxnoZrHFTyOI6w";
-
     @Value("${jwt.secret}")
     private String SECRET_KEY;
 

@@ -2,6 +2,7 @@ package com.dmytro.language_learning_api.controller;
 
 import com.dmytro.language_learning_api.dto.UsersDTO;
 import com.dmytro.language_learning_api.dto.authentication.AuthResponse;
+import com.dmytro.language_learning_api.dto.authentication.LoginRequest;
 import com.dmytro.language_learning_api.security.jwt.JwtService;
 import com.dmytro.language_learning_api.service.securityService.AuthService;
 import com.dmytro.language_learning_api.service.securityService.CookieService;
@@ -33,10 +34,10 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@Valid @RequestBody UsersDTO dto, HttpServletResponse response) {
-        AuthResponse authResponse = authService.login(dto);
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request, HttpServletResponse response) {
+        AuthResponse authResponse = authService.login(request);
 
-        String refreshToken = jwtService.generateRefreshToken(dto.email());
+        String refreshToken = jwtService.generateRefreshToken(request.email());
 
         cookieService.addRefreshToken(response, refreshToken);
         /*

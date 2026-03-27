@@ -2,6 +2,7 @@ package com.dmytro.language_learning_api.service.securityService;
 
 import com.dmytro.language_learning_api.dto.UsersDTO;
 import com.dmytro.language_learning_api.dto.authentication.AuthResponse;
+import com.dmytro.language_learning_api.dto.authentication.LoginRequest;
 import com.dmytro.language_learning_api.model.Role;
 import com.dmytro.language_learning_api.model.Users;
 import com.dmytro.language_learning_api.repository.UsersRepository;
@@ -35,6 +36,7 @@ public class AuthServiceImpl implements AuthService {
         String refreshToken = jwtService.generateRefreshToken(user.getEmail());
 
         return new AuthResponse(
+                user.getId(),
                 accessToken,
                 null,
                 user.getEmail(),
@@ -43,21 +45,21 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public AuthResponse login(UsersDTO dto) {
+    public AuthResponse login(LoginRequest request) {
         authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        dto.email(),
-                        dto.password()
+                        request.email(),
+                        request.password()
                 )
         );
 
-        Users user = usersRepository.findByEmail(dto.email())
+        Users user = usersRepository.findByEmail(request.email())
                 .orElseThrow();
 
         String accessToken = jwtService.generateAccessToken(user.getEmail(), user.getRole());
-        String refreshToken = jwtService.generateRefreshToken(user.getEmail());
 
         return new AuthResponse(
+                user.getId(),
                 accessToken,
                 null,
                 user.getEmail(),
@@ -80,6 +82,7 @@ public class AuthServiceImpl implements AuthService {
                 jwtService.generateAccessToken(user.getEmail(), user.getRole());
 
         return new AuthResponse(
+                user.getId(),
                 newAccessToken,
                 refreshToken,
                 user.getEmail(),
