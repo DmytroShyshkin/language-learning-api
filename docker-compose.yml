@@ -3,7 +3,7 @@ services:
     image: postgres:15
     container_name: lang-db
     environment:
-      - POSTGRES_DB=languageLearning
+      - POSTGRES_DB=language_learning
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     ports:
@@ -19,7 +19,7 @@ services:
     depends_on:
       - db
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/languageLearning
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/language_learning
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=postgres
 
