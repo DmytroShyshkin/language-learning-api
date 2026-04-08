@@ -1,10 +1,37 @@
-HELP.md
+# Build artifacts
 target/
-.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
+build/
+bin/
+out/
 
-### STS ###
+# Ignoring results of build
+**/target/
+**/build/
+
+# Maven Wrapper
+# .mvn/wrapper/maven-wrapper.jar
+
+# Секреты и настройки окружения
+.env
+.env.local
+.terraform
+*.tfstate
+
+# Logs
+*.log
+logs/
+
+# IDE - IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+
+# IDE - VS Code
+.vscode/
+
+# IDE - Eclipse/STS
 .apt_generated
 .classpath
 .factorypath
@@ -13,21 +40,6 @@ target/
 .springBeans
 .sts4-cache
 
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
-
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
-
-### VS Code ###
-.vscode/
+# System files
+.DS_Store
+Thumbs.db
