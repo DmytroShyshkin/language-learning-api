@@ -135,6 +135,7 @@ public class GlobalExceptionHandler {
                 "Invalid email or password.",
                 req.getRequestURI()
         );
+        log.warn("Invalid email or password: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
     }
 
