@@ -3,6 +3,8 @@ package com.dmytro.language_learning_api.service.securityService;
 import com.dmytro.language_learning_api.dto.UsersDTO;
 import com.dmytro.language_learning_api.dto.authentication.AuthResponse;
 import com.dmytro.language_learning_api.dto.authentication.LoginRequest;
+import com.dmytro.language_learning_api.exception.NotFoundException.NotFoundException;
+import com.dmytro.language_learning_api.exception.NotFoundException.UserNotFoundException;
 import com.dmytro.language_learning_api.model.Role;
 import com.dmytro.language_learning_api.model.Users;
 import com.dmytro.language_learning_api.repository.UsersRepository;
@@ -54,7 +56,7 @@ public class AuthServiceImpl implements AuthService {
         );
 
         Users user = usersRepository.findByEmail(request.email())
-                .orElseThrow();
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         String accessToken = jwtService.generateAccessToken(user.getEmail(), user.getRole());
 
