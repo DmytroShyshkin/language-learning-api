@@ -89,7 +89,7 @@ src/
 
 **Dmytro Shyshkin**
 DAM Student · Java Backend Developer
-[LinkedIn](https://linkedin.com/in/your-profile) · [GitHub](https://github.com/DmytroShyshkin)
+[LinkedIn](www.linkedin.com/in/dmytro-shyshkin-01a722323) · [GitHub](https://github.com/DmytroShyshkin)
 
 ---
 ---
