@@ -34,6 +34,9 @@ public class Users {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @Column(name = "email_verified", nullable = false, columnDefinition = "boolean default false")
     private boolean emailVerified = false;
+
     private String verificationToken;
 }
