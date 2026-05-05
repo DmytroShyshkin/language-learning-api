@@ -7,5 +7,6 @@ import com.dmytro.language_learning_api.dto.authentication.LoginRequest;
 public interface AuthService {
     AuthResponse register(UsersDTO dto);
     AuthResponse login(LoginRequest request);
+    void verifyEmail(String token);
     AuthResponse refresh(String refreshToken);
 }

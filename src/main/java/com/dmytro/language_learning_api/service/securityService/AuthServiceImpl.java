@@ -15,6 +15,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
@@ -22,9 +24,35 @@ public class AuthServiceImpl implements AuthService {
     private final JwtService jwtService;
     private final UsersRepository usersRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
     @Override
     public AuthResponse register(UsersDTO dto) {
+        String verificationToken = UUID.randomUUID().toString();
+
+        Users user = Users.builder()
+                .email(dto.email())
+                .username(dto.username())
+                .password(passwordEncoder.encode(dto.password()))
+                .role(Role.USER)
+                .emailVerified(false)
+                .verificationToken(verificationToken)
+                .build();
+
+        usersRepository.save(user);
+
+        emailService.sendVerificationEmail(user.getEmail(), verificationToken);
+
+        String accessToken = jwtService.generateAccessToken(user.getEmail(), user.getRole());
+
+        return new AuthResponse(
+                user.getId(),
+                accessToken,
+                null,
+                user.getEmail(),
+                user.getUsername()
+        );
+        /*
         Users user = Users.builder()
                 .email(dto.email())
                 .username(dto.username())
@@ -44,6 +72,7 @@ public class AuthServiceImpl implements AuthService {
                 user.getEmail(),
                 user.getUsername()
         );
+        */
     }
 
     @Override
@@ -67,6 +96,16 @@ public class AuthServiceImpl implements AuthService {
                 user.getEmail(),
                 user.getUsername()
         );
+    }
+
+    @Override
+    public void verifyEmail(String token) {
+        Users user = usersRepository.findByVerificationToken(token)
+                .orElseThrow(() -> new NotFoundException("Invalid or expired token."));
+
+        user.setEmailVerified(true);
+        user.setVerificationToken(null);
+        usersRepository.save(user);
     }
 
     @Override

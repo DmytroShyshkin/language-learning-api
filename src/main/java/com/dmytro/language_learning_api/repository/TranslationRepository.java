@@ -12,6 +12,5 @@ import java.util.UUID;
 @Repository
 public interface TranslationRepository extends JpaRepository<Translation, UUID> {
     Page<Translation> findByWordId(UUID wordId, Pageable pageable);
-    //List<Translation> findByWordId(UUID wordId, Pageable pageable);
     List<Translation> findByTargetLanguageAndWordOwnerId(String targetLanguage, UUID ownerId);
 }
