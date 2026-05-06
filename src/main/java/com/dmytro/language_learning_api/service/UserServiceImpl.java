@@ -2,6 +2,7 @@ package com.dmytro.language_learning_api.service;
 
 import com.dmytro.language_learning_api.dto.UsersDTO;
 import com.dmytro.language_learning_api.dto.response.PageResponse;
+import com.dmytro.language_learning_api.exception.ConflictException.ConflictException;
 import com.dmytro.language_learning_api.exception.ConflictException.EmailAlreadyExistsException;
 import com.dmytro.language_learning_api.exception.ConflictException.UsernameAlreadyExistsException;
 import com.dmytro.language_learning_api.exception.NotFoundException.NotFoundException;
@@ -105,6 +106,8 @@ public class UserServiceImpl implements UserService {
     public void updatePasswordByEmail(String currentEmail, String oldPassword, String newPassword) {
         Users user = usersRepository.findByEmail(currentEmail).orElseThrow(
                 ()-> new UserNotFoundException("User not found by email '" + currentEmail + "'"));
+
+        if(oldPassword.equals(newPassword)) throw new ConflictException("You introduced same password");
 
         user.setPassword(passwordEncoder.encode(newPassword));
         usersRepository.save(user);
