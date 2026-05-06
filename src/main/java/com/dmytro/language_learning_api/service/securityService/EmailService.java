@@ -12,11 +12,13 @@ import org.slf4j.LoggerFactory;
 @Service
 @RequiredArgsConstructor
 public class EmailService {
-    private final JavaMailSender mailSender;
     private static final Logger log = LoggerFactory.getLogger(EmailService.class);
+
+    private final JavaMailSender mailSender;
 
     @Value("${spring.mail.username}")
     private String from;
+
     @Value("${app.frontend.url}")
     private String frontendUrl;
 
