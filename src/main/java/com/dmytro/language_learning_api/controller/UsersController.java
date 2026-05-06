@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,25 +43,34 @@ public class UsersController {
                 .body(createdUser);
     }
 
-    @PutMapping("/{id}/email")
-    public ResponseEntity<UsersDTO> updateEmail(@PathVariable UUID id, @Valid @RequestParam String email) {
-        return ResponseEntity.ok(userService.updateEmail(id, email));
+    @PutMapping("/me/email")
+    public ResponseEntity<UsersDTO> updateEmail(
+            @RequestBody String newEmail
+            , Authentication authentication) {
+        return ResponseEntity.ok(userService.updateEmail(authentication.getName(), newEmail));
     }
 
-    @PutMapping("/{id}/username")
-    public ResponseEntity<UsersDTO> updateUsername(@PathVariable UUID id, @Valid @RequestParam String username) {
-        return ResponseEntity.ok(userService.updateUsername(id, username));
+    @PutMapping("/me/username")
+    public ResponseEntity<UsersDTO> updateUsername(
+            @RequestBody String newUsername
+            , Authentication authentication) {
+        return ResponseEntity.ok(userService.updateUsernameByEmail(authentication.getName(), newUsername));
     }
 
-    @PutMapping("/{id}/password")
-    public ResponseEntity<Void> updatePassword(@PathVariable UUID id, @Valid @RequestParam String password) {
-        userService.updatePassword(id, password);
+    @PutMapping("/me/password")
+    public ResponseEntity<Void> updatePassword(
+            @PathVariable String oldPassword
+            , @Valid @RequestParam String newPassword
+            , Authentication authentication) {
+        userService.updatePasswordByEmail(authentication.getName(), oldPassword, newPassword);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable UUID id) {
-        userService.deleteUser(id);
+    @DeleteMapping("/me")
+    public ResponseEntity<Void> deleteUser(Authentication authentication) {
+        String email = authentication.getName();
+        userService.deleteUserByEmail(email);
         return ResponseEntity.noContent().build();
     }
+
 }

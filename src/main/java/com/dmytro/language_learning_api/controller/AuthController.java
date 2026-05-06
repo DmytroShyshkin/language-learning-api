@@ -3,6 +3,8 @@ package com.dmytro.language_learning_api.controller;
 import com.dmytro.language_learning_api.dto.UsersDTO;
 import com.dmytro.language_learning_api.dto.authentication.AuthResponse;
 import com.dmytro.language_learning_api.dto.authentication.LoginRequest;
+import com.dmytro.language_learning_api.exception.ConflictException.ConflictException;
+import com.dmytro.language_learning_api.repository.UsersRepository;
 import com.dmytro.language_learning_api.security.jwt.JwtService;
 import com.dmytro.language_learning_api.service.securityService.AuthService;
 import com.dmytro.language_learning_api.service.securityService.CookieService;
@@ -22,9 +24,17 @@ public class AuthController {
     private final AuthService authService;
     private final JwtService jwtService;
     private final CookieService cookieService;
+    private final UsersRepository usersRepository;
 
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@Valid @RequestBody UsersDTO dto) {
+        if (usersRepository.existsByEmail(dto.email())) {
+            throw new ConflictException("Email already in use.");
+        }
+        if (usersRepository.existsByUsername(dto.username())) {
+            throw new ConflictException("Username already in use.");
+        }
+
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(authService.register(dto));

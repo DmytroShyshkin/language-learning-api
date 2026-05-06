@@ -13,11 +13,13 @@ public interface UserService {
 
     UsersDTO createUser(UsersDTO dto);
 
-    UsersDTO updateEmail(UUID userId, String newEmail);
+    UsersDTO updateEmail(String oldEmail, String newEmail);
 
-    UsersDTO updateUsername(UUID userId, String newUsername);
+    UsersDTO updateUsernameByEmail(String currentEmail, String newUsername);
 
-    void updatePassword(UUID userId, String newPassword);
+    void updatePasswordByEmail(String currentEmail,String oldPassword, String newPassword);
+
+    void deleteUserByEmail(String email);
 
     void deleteUser(UUID userId);
 

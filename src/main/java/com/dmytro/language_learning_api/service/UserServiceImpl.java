@@ -4,14 +4,17 @@ import com.dmytro.language_learning_api.dto.UsersDTO;
 import com.dmytro.language_learning_api.dto.response.PageResponse;
 import com.dmytro.language_learning_api.exception.ConflictException.EmailAlreadyExistsException;
 import com.dmytro.language_learning_api.exception.ConflictException.UsernameAlreadyExistsException;
+import com.dmytro.language_learning_api.exception.NotFoundException.NotFoundException;
 import com.dmytro.language_learning_api.exception.NotFoundException.UserNotFoundException;
 import com.dmytro.language_learning_api.mapper.UsersMapper;
 import com.dmytro.language_learning_api.model.Users;
 import com.dmytro.language_learning_api.repository.UsersRepository;
+import com.dmytro.language_learning_api.security.PasswordEncoderConfig;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,6 +26,7 @@ public class UserServiceImpl implements UserService {
 
     private final UsersRepository usersRepository;
     private final UsersMapper usersMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public PageResponse<UsersDTO> getAllUsers(int pageNo, int pageSize) {
@@ -68,8 +72,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UsersDTO updateEmail(UUID userId, String newEmail) {
-        Users user = getUserOrThrow(userId);
+    public UsersDTO updateEmail(String oldEmail, String newEmail) {
+        Users user = usersRepository.findByEmail(oldEmail).orElseThrow(
+                ()-> new UserNotFoundException("User by email '" + oldEmail + "' not found"));
 
         if (usersRepository.existsByEmail(newEmail)) {
             throw new EmailAlreadyExistsException("Email: " + newEmail + " already in use");
@@ -82,8 +87,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UsersDTO updateUsername(UUID userId, String newUsername) {
-        Users user = getUserOrThrow(userId);
+    public UsersDTO updateUsernameByEmail(String currentEmail, String newUsername) {
+        Users user = usersRepository.findByEmail(currentEmail).orElseThrow(
+                ()-> new UserNotFoundException("User not found by email '" + currentEmail + "'"));
 
         if (usersRepository.existsByUsername(newUsername)) {
             throw new UsernameAlreadyExistsException("Username: " + newUsername + " already in use");
@@ -96,12 +102,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updatePassword(UUID userId, String newPassword) {
-        Users user = getUserOrThrow(userId);
+    public void updatePasswordByEmail(String currentEmail, String oldPassword, String newPassword) {
+        Users user = usersRepository.findByEmail(currentEmail).orElseThrow(
+                ()-> new UserNotFoundException("User not found by email '" + currentEmail + "'"));
 
-        // luego estaría PasswordEncoder
-        user.setPassword(newPassword);
+        user.setPassword(passwordEncoder.encode(newPassword));
         usersRepository.save(user);
+    }
+
+    public void deleteUserByEmail(String email) {
+        Users user = usersRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("User not found."));
+        usersRepository.delete(user);
     }
 
     @Override
