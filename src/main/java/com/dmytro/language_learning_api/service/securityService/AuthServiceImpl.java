@@ -3,6 +3,7 @@ package com.dmytro.language_learning_api.service.securityService;
 import com.dmytro.language_learning_api.dto.UsersDTO;
 import com.dmytro.language_learning_api.dto.authentication.AuthResponse;
 import com.dmytro.language_learning_api.dto.authentication.LoginRequest;
+import com.dmytro.language_learning_api.exception.ConflictException.ConflictException;
 import com.dmytro.language_learning_api.exception.NotFoundException.NotFoundException;
 import com.dmytro.language_learning_api.exception.NotFoundException.UserNotFoundException;
 import com.dmytro.language_learning_api.model.Role;
@@ -52,27 +53,6 @@ public class AuthServiceImpl implements AuthService {
                 user.getEmail(),
                 user.getUsername()
         );
-        /*
-        Users user = Users.builder()
-                .email(dto.email())
-                .username(dto.username())
-                .password(passwordEncoder.encode(dto.password()))
-                .role(Role.USER)
-                .build();
-
-        usersRepository.save(user);
-
-        String accessToken = jwtService.generateAccessToken(user.getEmail(), user.getRole());
-        String refreshToken = jwtService.generateRefreshToken(user.getEmail());
-
-        return new AuthResponse(
-                user.getId(),
-                accessToken,
-                null,
-                user.getEmail(),
-                user.getUsername()
-        );
-        */
     }
 
     @Override
@@ -99,13 +79,19 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public void verifyEmail(String token) {
-        Users user = usersRepository.findByVerificationToken(token)
-                .orElseThrow(() -> new NotFoundException("Invalid or expired token."));
+    public void resendVerificationEmail(String email) {
+        Users user = usersRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("User not found."));
 
-        user.setEmailVerified(true);
-        user.setVerificationToken(null);
+        if (user.isEmailVerified()) {
+            throw new ConflictException("Email already verified.");
+        }
+
+        String token = UUID.randomUUID().toString();
+        user.setVerificationToken(token);
         usersRepository.save(user);
+
+        emailService.sendVerificationEmail(email, token);
     }
 
     @Override

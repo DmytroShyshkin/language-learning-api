@@ -14,6 +14,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -67,9 +68,9 @@ public class AuthController {
          */
     }
 
-    @GetMapping("/verify")
-    public ResponseEntity<String> verify(@RequestParam String token) {
-        authService.verifyEmail(token);
-        return ResponseEntity.ok("Email verified successfully.");
+    @PostMapping("/resend-verification")
+    public ResponseEntity<Void> resendVerification(Authentication authentication) {
+        authService.resendVerificationEmail(authentication.getName());
+        return ResponseEntity.ok().build();
     }
 }
