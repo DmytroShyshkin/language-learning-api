@@ -43,3 +43,5 @@ out/
 # System files
 .DS_Store
 Thumbs.db
+src/main/java/com/dmytro/language_learning_api.zip
+src/main/java/com/dmytro/language_learning_api/language_learning_api.zip
