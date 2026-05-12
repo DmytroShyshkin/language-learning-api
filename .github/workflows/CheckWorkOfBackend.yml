@@ -15,3 +15,10 @@ jobs:
           cache: 'maven'
       - name: Build
         run: mvn clean package -DskipTests
+  render-deploy:
+    needs: [check]
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Render
+        run: curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}"
