@@ -103,7 +103,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updatePasswordByEmail(String currentEmail, String oldPassword, String newPassword) {
+    public void updatePasswordByEmail(
+            String currentEmail, String oldPassword, String newPassword
+    ) {
         Users user = usersRepository.findByEmail(currentEmail).orElseThrow(
                 ()-> new UserNotFoundException("User not found by email '" + currentEmail + "'"));
 

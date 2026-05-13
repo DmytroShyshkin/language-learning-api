@@ -2,6 +2,7 @@ package com.dmytro.language_learning_api.controller;
 
 import com.dmytro.language_learning_api.dto.UsersDTO;
 import com.dmytro.language_learning_api.dto.response.PageResponse;
+import com.dmytro.language_learning_api.dto.updateRequests.UpdatePasswordRequest;
 import com.dmytro.language_learning_api.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -46,23 +47,30 @@ public class UsersController {
     @PutMapping("/me/email")
     public ResponseEntity<UsersDTO> updateEmail(
             @RequestBody String newEmail
-            , Authentication authentication) {
+            , Authentication authentication)
+    {
         return ResponseEntity.ok(userService.updateEmail(authentication.getName(), newEmail));
     }
 
     @PutMapping("/me/username")
     public ResponseEntity<UsersDTO> updateUsername(
             @RequestBody String newUsername
-            , Authentication authentication) {
+            , Authentication authentication)
+    {
         return ResponseEntity.ok(userService.updateUsernameByEmail(authentication.getName(), newUsername));
     }
 
     @PutMapping("/me/password")
     public ResponseEntity<Void> updatePassword(
-            @PathVariable String oldPassword
-            , @Valid @RequestParam String newPassword
-            , Authentication authentication) {
-        userService.updatePasswordByEmail(authentication.getName(), oldPassword, newPassword);
+            @RequestBody UpdatePasswordRequest passwordRequest
+            , Authentication authentication)
+    {
+        userService.updatePasswordByEmail(
+                authentication.getName()
+                , passwordRequest.oldPassword()
+                , passwordRequest.newPassword()
+        );
+
         return ResponseEntity.noContent().build();
     }
 
@@ -70,6 +78,7 @@ public class UsersController {
     public ResponseEntity<Void> deleteUser(Authentication authentication) {
         String email = authentication.getName();
         userService.deleteUserByEmail(email);
+        
         return ResponseEntity.noContent().build();
     }
 
