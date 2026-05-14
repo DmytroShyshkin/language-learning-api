@@ -59,29 +59,6 @@ public class WordsServiceImpl implements WordsService {
         word.setOwner(user);
 
         return wordsMapper.toDto(wordsRepository.save(word));
-
-        /*
-        Users owner = usersRepository.findById(dto.ownerId())
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
-        */
-        /*
-        Users owner = usersRepository.findByEmail(jwtUtil.getCurrentUserEmail())
-                .orElseThrow(() -> new UserNotFoundException("No users in DB"));
-         */
-        /*
-        Users owner = jwtUtil.getCurrentUser();
-
-        Words word = wordsMapper.fromDto(dto);
-        word.setOwner(owner);
-        */
-        /*
-        word.setSourceLanguage(dto.sourceLanguage());
-        word.setOriginalWord(dto.originalWord());
-        */
-        /*
-        Words savedWord = wordsRepository.save(word);
-        return wordsMapper.toDto(savedWord);
-        */
     }
 
     @Transactional(readOnly = true)
@@ -90,21 +67,13 @@ public class WordsServiceImpl implements WordsService {
         Words word = getWordOrThrow(wordId);
         //return wordsMapper.toDto(word);
 
-        WordsDTO dto = wordsMapper.toDto(word);
-
         Set<UUID> synonymIds = word.getSynonyms() == null
                 ? Collections.emptySet()
                 : word.getSynonyms().stream()
                 .map(Words::getId)
                 .collect(Collectors.toSet());
 
-        return new WordsDTO(
-                word.getId(),
-                word.getSourceLanguage(),
-                word.getOriginalWord(),
-                //word.getOwner().getId(),
-                synonymIds
-        );
+        return wordsMapper.toDto(word);
     }
 
     @Override
@@ -127,9 +96,14 @@ public class WordsServiceImpl implements WordsService {
     }
 
     @Override
-    public PageResponse<WordsDTO> getAllWordsByOwnerId(UUID ownerId, int pageNo, int pageSize) {
+    public PageResponse<WordsDTO> getAllWordsByOwnerEmail(String ownerEmail, int pageNo, int pageSize) {
+        Users user = usersRepository.findByEmail(ownerEmail)
+                .orElseThrow(
+                        ()-> new UserNotFoundException("User by email '" + ownerEmail + "' not found")
+                );
+
         Pageable pageable = PageRequest.of(pageNo, pageSize);
-        Page<Words> wordsPage = wordsRepository.findByOwnerId(ownerId, pageable);
+        Page<Words> wordsPage = wordsRepository.findByOwnerId(user.getId(), pageable);
         List<Words> words = wordsPage.getContent();
         List<WordsDTO> wordsList = words.stream()
                 .map(word -> {
@@ -207,7 +181,8 @@ public class WordsServiceImpl implements WordsService {
 
     // Clases auxiliares
     private Words getWordOrThrow(UUID wordId) {
-        return wordsRepository.findById(wordId)
+        return wordsRepository
+                .findById(wordId)
                 .orElseThrow(() -> new WordNotFoundException(
                         "Word with id " + wordId + " not found"
                 ));

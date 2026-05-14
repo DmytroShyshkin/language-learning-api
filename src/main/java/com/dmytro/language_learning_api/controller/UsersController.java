@@ -1,8 +1,9 @@
 package com.dmytro.language_learning_api.controller;
 
 import com.dmytro.language_learning_api.dto.UsersDTO;
+import com.dmytro.language_learning_api.dto.requests.getRequests.GetUserDataDTO;
 import com.dmytro.language_learning_api.dto.response.PageResponse;
-import com.dmytro.language_learning_api.dto.updateRequests.UpdatePasswordRequest;
+import com.dmytro.language_learning_api.dto.requests.updateRequests.UpdatePasswordRequestDTO;
 import com.dmytro.language_learning_api.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -11,8 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/users")
@@ -30,9 +29,11 @@ public class UsersController {
         return new ResponseEntity<>(userService.getAllUsers(pageNo, pageSize), HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<UsersDTO> getUserById(@PathVariable UUID id) {
-        return ResponseEntity.ok(userService.getUserById(id));
+    @GetMapping("/me")
+    public ResponseEntity<GetUserDataDTO> getUserByEmail(
+            Authentication authentication
+    ) {
+        return ResponseEntity.ok(userService.getUserByEmail(authentication.getName()));
     }
 
     @PutMapping
@@ -62,7 +63,7 @@ public class UsersController {
 
     @PutMapping("/me/password")
     public ResponseEntity<Void> updatePassword(
-            @RequestBody UpdatePasswordRequest passwordRequest
+            @RequestBody UpdatePasswordRequestDTO passwordRequest
             , Authentication authentication)
     {
         userService.updatePasswordByEmail(
@@ -76,9 +77,8 @@ public class UsersController {
 
     @DeleteMapping("/me")
     public ResponseEntity<Void> deleteUser(Authentication authentication) {
-        String email = authentication.getName();
-        userService.deleteUserByEmail(email);
-        
+        userService.deleteUserByEmail(authentication.getName());
+
         return ResponseEntity.noContent().build();
     }
 

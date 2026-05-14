@@ -14,7 +14,7 @@ public interface WordsService {
     WordsDTO getWordById(UUID wordId);
     //List<WordsDTO> getWordsByUser(UUID ownerId);
     WordsDTO updateWord(UUID wordId, UpdateWordRequest updateWordRequest);
-    PageResponse<WordsDTO> getAllWordsByOwnerId(UUID wordId, int pageNo, int pageSize);
+    PageResponse<WordsDTO> getAllWordsByOwnerEmail(String ownerEmail, int pageNo, int pageSize);
     WordsDTO addTranslationToWord(UUID wordId, TranslationDTO dto);
     void addSynonym(UUID wordId, UUID synonymId);
     void deleteWord(UUID wordId);

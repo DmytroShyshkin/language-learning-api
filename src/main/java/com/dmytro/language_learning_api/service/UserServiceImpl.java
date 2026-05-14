@@ -1,6 +1,7 @@
 package com.dmytro.language_learning_api.service;
 
 import com.dmytro.language_learning_api.dto.UsersDTO;
+import com.dmytro.language_learning_api.dto.requests.getRequests.GetUserDataDTO;
 import com.dmytro.language_learning_api.dto.response.PageResponse;
 import com.dmytro.language_learning_api.exception.ConflictException.ConflictException;
 import com.dmytro.language_learning_api.exception.ConflictException.EmailAlreadyExistsException;
@@ -48,10 +49,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UsersDTO getUserById(UUID userId) {
-        Users user = getUserOrThrow(userId);
+    public GetUserDataDTO getUserByEmail(String email) {
+        Users user = getUserOrThrow(email);
 
-        return usersMapper.toDto(user);
+
+        return new GetUserDataDTO(user.getUsername(), user.getEmail());
+        //return usersMapper.toDto(user);
     }
 
     @Override
@@ -75,7 +78,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public UsersDTO updateEmail(String oldEmail, String newEmail) {
         Users user = usersRepository.findByEmail(oldEmail).orElseThrow(
-                ()-> new UserNotFoundException("User by email '" + oldEmail + "' not found"));
+                ()-> new UserNotFoundException("User by email '" + oldEmail + "' not found")
+        );
 
         if (usersRepository.existsByEmail(newEmail)) {
             throw new EmailAlreadyExistsException("Email: " + newEmail + " already in use");
@@ -121,15 +125,9 @@ public class UserServiceImpl implements UserService {
         usersRepository.delete(user);
     }
 
-    @Override
-    public void deleteUser(UUID userId) {
-        Users user = getUserOrThrow(userId);
-        usersRepository.delete(user);
-    }
-
     // Clases auxiliares
-    private Users getUserOrThrow(UUID userId) {
-        return usersRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User User with id " + userId + " not found"));
+    private Users getUserOrThrow(String email) {
+        return usersRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User User with id " + email + " not found"));
     }
 }

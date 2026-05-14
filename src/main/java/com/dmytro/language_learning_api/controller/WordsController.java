@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -30,20 +31,29 @@ public class WordsController {
         return ResponseEntity.ok(wordsService.getWordById(wordId));
     }
 
-    @GetMapping("/user/{userId}")
+    @GetMapping("/user")
     public ResponseEntity<PageResponse<WordsDTO>> getAllWordsByOwnerId(
-            @PathVariable UUID userId,
+            Authentication authentication,
             @RequestParam(defaultValue = "0", required = false)int pageNo,
             @RequestParam(defaultValue = "10", required = false)int pageSize
     ) {
-        return new ResponseEntity<>(wordsService.getAllWordsByOwnerId(userId, pageNo, pageSize), HttpStatus.OK);
+        return new ResponseEntity<>(
+                wordsService
+                        .getAllWordsByOwnerEmail(
+                                authentication.getName()
+                                , pageNo
+                                , pageSize
+                        )
+                , HttpStatus.OK
+        );
     }
 
     @PostMapping
     public ResponseEntity<WordsDTO> createWord(@Valid @RequestBody CreateWordRequestDTO request) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(wordsService.createWord(request));
+                .body(wordsService.createWord(request)
+                );
     }
 
     @PutMapping("/update-word/{wordId}")
